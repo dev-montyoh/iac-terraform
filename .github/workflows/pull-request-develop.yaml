@@ -1,0 +1,19 @@
+name: Pull Request Workflow (develop)
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+    paths:
+      - '**/*.tf'
+
+jobs:
+  terraform-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Terraform Validate
+        uses: ./.github/actions/validate
