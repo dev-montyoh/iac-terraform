@@ -12,15 +12,18 @@ HTTPS clone URL: https://github.com/Monty-Oh/backend-iac-terraform.git
 ```
 1. AWS 계정 구성
     - aws configure --profile 프로필명
+    
+2. Terraform 검증
+    - terraform validate
 
-2. 루트 디렉토리에서 다음 명령어 실행
+3. 루트 디렉토리에서 다음 명령어 실행
     - terraform init
     - aws 프로필이 default로 설정 시
         - terraform apply
     - aws 프로필을 직접 지정할 시
         - AWS_PROFILE=프로필명 terraform apply
 
-3. IaC 적용을 취소할 시 다음 명령어 실행
+4. IaC 적용을 취소할 시 다음 명령어 실행
     - terraform apply -destroy
     - 모든 인프라 정보가 사라지므로 가급적 'terraform apply'를 통한 업데이트 권장
 ```
