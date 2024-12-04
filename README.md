@@ -9,24 +9,31 @@ HTTPS clone URL: https://github.com/Monty-Oh/backend-iac-terraform.git
 
 ---
 ## Local 개발 환경 구성
-```
-1. AWS 계정 구성
-    - aws configure --profile 프로필명
+`terraform apply` 의 경우  테스트 용도로만 사용하고, MergeRequest GithubActions 를 통해 반영되게끔 할 것
+
+1. AWS 계정 구성  
+    `aws configure --profile 프로필명`
+
+
+2. Terraform 초기화
+    - terraform init
     
-2. Terraform 검증
+
+3. Terraform 검증
     - terraform validate
 
-3. 루트 디렉토리에서 다음 명령어 실행
-    - terraform init
-    - aws 프로필이 default로 설정 시
-        - terraform apply
-    - aws 프로필을 직접 지정할 시
-        - AWS_PROFILE=프로필명 terraform apply
 
-4. IaC 적용을 취소할 시 다음 명령어 실행
-    - terraform apply -destroy
-    - 모든 인프라 정보가 사라지므로 가급적 'terraform apply'를 통한 업데이트 권장
-```
+4. Terraform 적용
+   - aws 프로필이 default로 설정 시  
+       `terraform apply`
+   - aws 프로필을 직접 지정할 시  
+       `AWS_PROFILE=프로필명 terraform apply`
+
+
+5. IaC 적용을 취소할 시 다음 명령어 실행
+    - `terraform apply -destroy`
+    - 모든 인프라 정보가 사라지므로 가급적 `terraform apply`를 통한 업데이트 권장
+
 
 ---
 ## Git Flow
