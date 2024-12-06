@@ -12,5 +12,13 @@ groups = {
       "AmazonEC2FullAccess",
       "AmazonRoute53FullAccess"
     ]
+  },
+  "Guest" = {
+    name         = "Guest",
+    policies_aws = [
+      "IAMReadOnlyAccess",
+      "AmazonEC2ReadOnlyAccess",
+      "AmazonRoute53ReadOnlyAccess"
+    ]
   }
 }
