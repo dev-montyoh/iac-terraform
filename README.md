@@ -1,5 +1,9 @@
 # backend-iac-terraform
 개인 프로젝트에 쓰이는 클라우드 환경의 코드형 인프라(IaC) 리포지토리
+---
+## 주의사항
+1. local 에서 작업 시 apply 사용은 자제한다. 가급적 `pull_request`를 통한 `github actions` 를 통해 반영한다.
+2. `Admin`그룹은 콘솔상에서 직접 관리한다.
 
 ---
 ## Getting Started
