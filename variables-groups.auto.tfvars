@@ -10,7 +10,8 @@ groups = {
     policies_aws = [
       "IAMReadOnlyAccess",
       "AmazonEC2FullAccess",
-      "AmazonRoute53FullAccess"
+      "AmazonRoute53FullAccess",
+      "IAMUserChangePassword"
     ]
   },
   "Guest" = {
@@ -18,7 +19,8 @@ groups = {
     policies_aws = [
       "IAMReadOnlyAccess",
       "AmazonEC2ReadOnlyAccess",
-      "AmazonRoute53ReadOnlyAccess"
+      "AmazonRoute53ReadOnlyAccess",
+      "IAMUserChangePassword"
     ]
   }
 }

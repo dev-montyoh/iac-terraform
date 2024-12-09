@@ -17,4 +17,7 @@ policies_aws = {
   "AmazonRoute53ReadOnlyAccess" = {
     arn = "arn:aws:iam::aws:policy/AmazonRoute53ReadOnlyAccess"
   }
+  "IAMUserChangePassword" = {
+    arn = "arn:aws:iam::aws:policy/IAMUserChangePassword"
+  }
 }
