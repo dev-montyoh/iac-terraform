@@ -1,4 +1,4 @@
-name: 'terraform plan'
+name: 'terraform apply'
 
 runs:
   using: composite
@@ -11,6 +11,6 @@ runs:
       run: terraform validate
       shell: bash
 
-    - name: Terraform Plan
-      run: terraform plan
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
       shell: bash
