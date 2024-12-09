@@ -1,12 +1,6 @@
 groups = {
-  "Admin" = {
-    name         = "Admin"
-    policies_aws = [
-      "IAMFullAccess"
-    ]
-  },
   "Developers" = {
-    name         = "Developers"
+    name         = "Developer"
     policies_aws = [
       "IAMReadOnlyAccess",
       "AmazonEC2FullAccess",

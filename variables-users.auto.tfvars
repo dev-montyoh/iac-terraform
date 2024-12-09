@@ -3,7 +3,7 @@ users = {
     name         = "developer_monty"
     path         = "/user/iac/developers/"
     email        = "ohhanjin0330@gmail.com"
-    groups       = ["Developers"]
+    groups       = ["Developer"]
   }
   "guest_systema" = {
     name         = "systema"
