@@ -25,7 +25,9 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Terraform Validate
+        if: success()
         uses: ./.github/actions/validate
 
       - name: Terraform Plan
+        if: success()
         uses: ./.github/actions/plan
