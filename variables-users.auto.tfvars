@@ -1,6 +1,6 @@
 users = {
   "developer_monty" = {
-    name         = "developer_monty"
+    name         = "monty"
     path         = "/user/iac/developers/"
     email        = "ohhanjin0330@gmail.com"
     groups       = ["Developer"]
