@@ -6,4 +6,5 @@ module "iam" {
   source       = "./iam"
   groups       = var.groups
   policies_aws = var.policies_aws
+  users        = var.users
 }

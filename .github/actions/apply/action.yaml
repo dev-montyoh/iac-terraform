@@ -1,0 +1,16 @@
+name: 'terraform apply'
+
+runs:
+  using: composite
+  steps:
+    - name: Terraform Init
+      run: terraform init
+      shell: bash
+
+    - name: Terraform Validate
+      run: terraform validate
+      shell: bash
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+      shell: bash

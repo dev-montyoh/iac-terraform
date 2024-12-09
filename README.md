@@ -1,5 +1,9 @@
 # backend-iac-terraform
 개인 프로젝트에 쓰이는 클라우드 환경의 코드형 인프라(IaC) 리포지토리
+---
+## 주의사항
+1. local 에서 작업 시 apply 사용은 자제한다. 가급적 `pull_request`를 통한 `github actions` 를 통해 반영한다.
+2. `Admin`그룹은 콘솔상에서 직접 관리한다.
 
 ---
 ## Getting Started
@@ -11,28 +15,24 @@ HTTPS clone URL: https://github.com/Monty-Oh/backend-iac-terraform.git
 ## Local 개발 환경 구성
 `terraform apply` 의 경우  테스트 용도로만 사용하고, MergeRequest GithubActions 를 통해 반영되게끔 할 것
 
-1. AWS 계정 구성  
-    `aws configure --profile 프로필명`
+### AWS 계정 구성  
+`aws configure --profile 프로필명`
 
-
-2. Terraform 초기화
-    - terraform init
+### Terraform 초기화
+`terraform init`
     
+### Terraform 검증
+`terraform validate`
 
-3. Terraform 검증
-    - terraform validate
-
-
-4. Terraform 적용
+### Terraform 적용
    - aws 프로필이 default로 설정 시  
        `terraform apply`
    - aws 프로필을 직접 지정할 시  
        `AWS_PROFILE=프로필명 terraform apply`
 
-
-5. IaC 적용을 취소할 시 다음 명령어 실행
-    - `terraform apply -destroy`
-    - 모든 인프라 정보가 사라지므로 가급적 `terraform apply`를 통한 업데이트 권장
+### IaC 적용을 취소할 시 다음 명령어 실행
+`terraform apply -destroy`  
+모든 인프라 정보가 사라지므로 가급적 `terraform apply`를 통한 업데이트 권장
 
 
 ---

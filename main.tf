@@ -2,6 +2,7 @@ module "aws" {
   source       = "./aws"
   groups       = var.groups
   policies_aws = var.policies_aws
+  users        = var.users
 }
 
 terraform {
