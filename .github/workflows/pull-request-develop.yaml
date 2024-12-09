@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
       - develop
-      - master
     paths:
       - '**/*.tf'
 
@@ -17,3 +16,6 @@ jobs:
 
       - name: Terraform Validate
         uses: ./.github/actions/validate
+
+      - name: Terraform Plan
+        uses: ./.github/actions/plan
