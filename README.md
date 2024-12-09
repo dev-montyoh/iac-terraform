@@ -2,7 +2,8 @@
 개인 프로젝트에 쓰이는 클라우드 환경의 코드형 인프라(IaC) 리포지토리
 ---
 ## 주의사항
-1. local 에서 작업 시 apply 사용은 자제한다. 가급적 `pull_request`를 통한 `github actions` 를 통해 반영한다.
+1. 각 환경별로 pull_request 및 push 를 통해 관리하고, Terraform Cloud 를 통해 관리하도록 한다.  
+   - Terraform Cloud URL: https://app.terraform.io/app/organizations
 2. `Admin`그룹은 콘솔상에서 직접 관리한다.
 
 ---
@@ -13,7 +14,7 @@ HTTPS clone URL: https://github.com/Monty-Oh/backend-iac-terraform.git
 
 ---
 ## Local 개발 환경 구성
-`terraform apply` 의 경우  테스트 용도로만 사용하고, MergeRequest GithubActions 를 통해 반영되게끔 할 것
+주의! Terraform Cloud 를 통해 반영되게끔 할 것
 
 ### AWS 계정 구성  
 `aws configure --profile 프로필명`
