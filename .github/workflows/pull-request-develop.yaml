@@ -17,8 +17,3 @@ jobs:
 
       - name: Terraform Validate
         uses: ./.github/actions/validate
-
-      - name: Test Send Email
-        run: |
-          sudo chmod +x ./email_setup.sh
-          ./email_setup.sh $GMAIL_USERNAME $GMAIL_PASSWORD
