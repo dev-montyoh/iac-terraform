@@ -20,5 +20,5 @@ jobs:
 
       - name: Test Send Email
         run: |
-          chmod +x ./email_setup.sh |
+          sudo chmod +x ./email_setup.sh
           ./email_setup.sh $GMAIL_USERNAME $GMAIL_PASSWORD

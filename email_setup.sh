@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # install mutt (Alpine Linux)
-apt-get update
-apt-get install -y mutt
+sudo apt-get update
+sudo apt-get install -y mutt
 
 # Gmail account info
 GMAIL_USERNAME=$1
