@@ -1,10 +1,11 @@
 module "aws" {
-  source       = "./aws"
-  groups       = var.groups
-  policies_aws = var.policies_aws
-  users        = var.users
-  AWS_ACCESS_KEY_ID = var.AWS_ACCESS_KEY_ID
+  source                = "./aws"
+  groups                = var.groups
+  policies_aws          = var.policies_aws
+  users                 = var.users
+  AWS_ACCESS_KEY_ID     = var.AWS_ACCESS_KEY_ID
   AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
+  VPC_ID                = var.VPC_ID
 }
 
 terraform {
