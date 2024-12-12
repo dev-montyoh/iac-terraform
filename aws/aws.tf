@@ -10,3 +10,7 @@ module "iam" {
   policies_aws = var.policies_aws
   users        = var.users
 }
+
+module "ec2" {
+  source = "./ec2"
+}
