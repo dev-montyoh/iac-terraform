@@ -8,7 +8,7 @@ module "security_group" {
 module "temp_ec2_instance" {
   source = "./instance"
   instance_name = "temp_ec2_instance"
-  security_group_ids = [module.security_group.ec2_security_group_ssh_info.id]
+  vpc_security_group_ids = [module.security_group.ec2_security_group_ssh_info.id]
 
   depends_on = [module.security_group]
 }
