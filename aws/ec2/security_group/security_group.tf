@@ -1,6 +1,7 @@
 resource "aws_security_group" "security_group_ssh" {
   name = "security_group_ssh"
   description = "Allow SSH traffic"
+  vpc_id = var.VPC_ID    //  default vpc vpc-0d6982a236c104fed
 
   # 들어오는 요청에 대해 SSH요청만 허용 (보통 22포트)
   ingress {
