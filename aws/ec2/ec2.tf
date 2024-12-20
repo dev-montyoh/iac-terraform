@@ -11,6 +11,7 @@ module "temp_ec2_instance" {
   instance_name = "temp_ec2_instance"
   instance_type = "t2.micro"
   ami           = "ami-0f1e61a80c7ab943e"
+  user_data = file("scripts/temp_ec2_userdata.sh")
 
   vpc_security_group_ids = [module.security_group.ec2_security_group_ssh_info.id]
 
