@@ -17,3 +17,14 @@ module "temp_ec2_instance" {
 
   depends_on = [module.security_group]
 }
+
+#   DB 서버 전용 인스턴스
+##  Amazon Linux 2023 AMI
+module "ec2_db_server_instance" {
+  source = "./instance"
+  ami           = "ami-0f1e61a80c7ab943e"
+  instance_name = "db_server"
+  instance_type = "t2.micro"
+  user_data     = file("scripts/ec2_db_server_userdata.sh")
+  vpc_security_group_ids = []
+}
