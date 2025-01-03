@@ -9,7 +9,7 @@ module "security_group" {
 module "ec2_db_server_instance" {
   source = "./instance"
   ami           = "ami-049788618f07e189d"
-  instance_name = "db_server"
+  instance_name = "database_server"
   instance_type = "t2.micro"
   user_data     = file("scripts/ec2_database_server_userdata.sh")
   # 보안 그룹 설정
