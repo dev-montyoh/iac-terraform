@@ -1,5 +1,9 @@
 # backend-iac-terraform
 개인 프로젝트에 쓰이는 클라우드 환경의 코드형 인프라(IaC) 리포지토리
+
+## CICD 구성
+![CICD](assets/cicd.drawio.png)
+
 ---
 ## 주의사항
 1. 각 환경별로 pull_request 및 push 를 통해 관리하고, Terraform Cloud 를 통해 관리하도록 한다.  
