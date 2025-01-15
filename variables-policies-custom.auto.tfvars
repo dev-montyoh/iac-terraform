@@ -1,7 +1,7 @@
 policies_custom = {
-  "PolicyForSystemManagerInstanceScheduler" = {
-    name        = "PolicyForSystemManagerInstanceScheduler"
-    description = "Policy for Instance Scheduler"
+  "PolicyForSSMEC2" = {
+    name        = "PolicyForSSMEC2"
+    description = "PolicyForSSMEC2"
     policy = {
       Version = "2012-10-17"
       Statement = [
