@@ -4,7 +4,7 @@ module "ssm_document" {
   source = "./document"
 }
 
-##  SSM Maintenance Window 정의
+##  SSM Maintenance Window(유지 관리 기간) 정의
 module "ssm_maintenance_window" {
-  source = "./maintenance.window"
+  source = "./maintenance_window"
 }
