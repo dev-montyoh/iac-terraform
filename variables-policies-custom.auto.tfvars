@@ -1,5 +1,5 @@
 policies_custom = {
-  "system_manager_instance_scheduler_policy" = {
+  "PolicyForSystemManagerInstanceScheduler" = {
     name        = "PolicyForSystemManagerInstanceScheduler"
     description = "Policy for Instance Scheduler"
     policy = {
