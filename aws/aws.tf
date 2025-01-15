@@ -5,10 +5,11 @@ provider "aws" {
 }
 
 module "iam" {
-  source       = "./iam"
-  groups       = var.groups
-  policies_aws = var.policies_aws
-  users        = var.users
+  source          = "./iam"
+  groups          = var.groups
+  policies_aws    = var.policies_aws
+  policies_custom = var.policies_custom
+  users           = var.users
 }
 
 module "ec2" {
