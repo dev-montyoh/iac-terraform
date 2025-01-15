@@ -16,10 +16,10 @@ variable "policies_custom" {
     name        = string
     description = string
     policy = object({
-      Version   = string
+      Version = string
       Statement = list(object({
         Effect   = string
-        Action   = list(string)
+        Action = list(string)
         Resource = string
       }))
     })
