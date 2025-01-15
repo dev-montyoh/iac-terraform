@@ -44,5 +44,5 @@ resource "aws_iam_role_policy_attachment" "attach_role_ec2_ssm" {
   role       = module.role_ec2_ssm.iam_role_info.name
   policy_arn = lookup(data.aws_iam_policy.policies_custom_with_arn, "PolicyForSystemManagerInstanceScheduler").arn
 
-  depends_on = [module.role_ec2_ssm]
+  depends_on = [module.role_ec2_ssm, data.aws_iam_policy.policies_custom_with_arn]
 }
