@@ -33,7 +33,6 @@ module "user" {
 ##  EC2 인스턴스 자동 기동 설정을 위한 USER_ROLE 생성
 module "role_ec2_ssm" {
   source = "./role"
-
   name = "RoleForSystemManagerInstanceScheduler"
   path = "/role/iac/systemManager/instanceScheduler/"
 

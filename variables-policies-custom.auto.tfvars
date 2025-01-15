@@ -2,7 +2,7 @@ policies_custom = {
   "system_manager_instance_scheduler_policy" = {
     name        = "PolicyForSystemManagerInstanceScheduler"
     description = "Policy for Instance Scheduler"
-    policy = jsonencode({
+    policy = {
       Version = "2012-10-17"
       Statement = [
         {
@@ -15,6 +15,6 @@ policies_custom = {
           Resource = "*"
         }
       ]
-    })
+    }
   }
 }

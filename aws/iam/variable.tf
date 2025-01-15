@@ -15,7 +15,14 @@ variable "policies_custom" {
   type = map(object({
     name        = string
     description = string
-    policy      = string
+    policy = object({
+      Version   = string
+      Statement = list(object({
+        Effect   = string
+        Action   = list(string)
+        Resource = string
+      }))
+    })
   }))
 }
 
