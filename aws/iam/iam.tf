@@ -20,8 +20,8 @@ module "user" {
 module "user_role_ec2_ssm" {
   source = "./role"
 
-  name = ""
-  path = ""
+  name = "AWSServiceRoleForSystemManager"
+  path = "/role/iac/systemmanager/"
 }
 
 resource "aws_iam_role_policy_attachment" "attach_ec2_full_access" {
