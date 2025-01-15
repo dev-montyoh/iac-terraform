@@ -31,18 +31,18 @@ module "user" {
 
 #   USER_ROLE
 ##  EC2 인스턴스 자동 기동 설정을 위한 USER_ROLE 생성
-module "role_ec2_ssm" {
+module "role_ssm_ec2" {
   source = "./role"
-  name = "RoleForSystemManagerInstanceScheduler"
-  path = "/role/iac/systemManager/instanceScheduler/"
+  name = "RoleForSSMEC2"
+  path = "/role/iac/ssm/ec2/"
 
   depends_on = [module.policy]
 }
 
 ##  EC2 자동 재기동에 필요한 UserRole 에 설정하는 권한
-resource "aws_iam_role_policy_attachment" "attach_role_ec2_ssm" {
-  role       = module.role_ec2_ssm.iam_role_info.name
-  policy_arn = lookup(data.aws_iam_policy.policies_custom_with_arn, "PolicyForSystemManagerInstanceScheduler").arn
+resource "aws_iam_role_policy_attachment" "attach_role_ssm_ec2" {
+  role       = module.role_ssm_ec2.iam_role_info.name
+  policy_arn = lookup(data.aws_iam_policy.policies_custom_with_arn, "PolicyForSSMEC2").arn
 
-  depends_on = [module.role_ec2_ssm, data.aws_iam_policy.policies_custom_with_arn]
+  depends_on = [module.role_ssm_ec2, data.aws_iam_policy.policies_custom_with_arn]
 }

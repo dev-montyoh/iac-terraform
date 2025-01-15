@@ -16,3 +16,10 @@ module "ec2" {
   source = "./ec2"
   VPC_ID = var.VPC_ID
 }
+
+module "ssm" {
+  source = "./ssm"
+  role_name = module.iam.role_ssm_ec2.name
+  role_arn = module.iam.role_ssm_ec2.arn
+  depends_on = [module.iam]
+}
