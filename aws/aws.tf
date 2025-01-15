@@ -18,8 +18,8 @@ module "ec2" {
 }
 
 module "ssm" {
-  source = "./ssm"
+  source    = "./ssm"
   role_name = module.iam.role_ssm_ec2.name
-  role_arn = module.iam.role_ssm_ec2.arn
+  role_arn  = module.iam.role_ssm_ec2.arn
   depends_on = [module.iam]
 }
