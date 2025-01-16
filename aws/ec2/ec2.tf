@@ -5,7 +5,7 @@ module "security_group" {
 }
 
 resource "aws_iam_instance_profile" "ssm_profile" {
-  name = SSMInstanceProfile
+  name = "SSMInstanceProfile"
   role = var.role_ssm_ec2_name
 }
 
