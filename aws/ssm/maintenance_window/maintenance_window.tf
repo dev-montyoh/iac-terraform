@@ -3,7 +3,7 @@ resource "aws_ssm_maintenance_window" "start_window" {
   name = "EC2SchedulerStartWindow"
 
   # 오전 8시 시작
-  schedule                   = "cron(0 8 ? * * *)"
+  schedule                   = "cron(0 13 ? * * *)"
   duration                   = 1
   cutoff                     = 0
   allow_unassociated_targets = true
@@ -14,7 +14,7 @@ resource "aws_ssm_maintenance_window" "stop_window" {
   name = "EC2SchedulerStopWindow"
 
   # 오전 12시 종료
-  schedule                   = "cron(0 0 ? * * *)"
+  schedule                   = "cron(0 12 ? * * *)"
   duration                   = 1
   cutoff                     = 0
   allow_unassociated_targets = true
@@ -22,5 +22,11 @@ resource "aws_ssm_maintenance_window" "stop_window" {
 
 ##  SSM Maintenance Window Task(유지 관리 기간/작업) 정의
 module "ssm_maintenance_window_task" {
-  source = "./task"
+  source                          = "./task"
+  role_arn                        = var.role_arn
+  role_name                       = var.role_name
+  ssm_document_start_arn          = var.ssm_document_start_arn
+  ssm_document_stop_arn           = var.ssm_document_stop_arn
+  ssm_maintenance_window_start_id = aws_ssm_maintenance_window.start_window.id
+  ssm_maintenance_window_stop_id  = aws_ssm_maintenance_window.stop_window.id
 }
