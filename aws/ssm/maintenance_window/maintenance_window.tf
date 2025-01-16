@@ -12,7 +12,7 @@ resource "aws_ssm_maintenance_window" "start_window" {
 ### 오전 12시 종료
 resource "aws_ssm_maintenance_window" "stop_window" {
   name                       = "EC2SchedulerWindowStop"
-  schedule                   = "cron(0 16 ? * * *)"
+  schedule                   = "cron(30 16 ? * * *)"
   duration                   = 1
   cutoff                     = 0
   allow_unassociated_targets = true
