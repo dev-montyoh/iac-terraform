@@ -22,5 +22,11 @@ resource "aws_ssm_maintenance_window" "stop_window" {
 
 ##  SSM Maintenance Window Task(유지 관리 기간/작업) 정의
 module "ssm_maintenance_window_task" {
-  source = "./task"
+  source                          = "./task"
+  role_arn                        = var.role_arn
+  role_name                       = var.role_name
+  ssm_document_start_arn          = var.ssm_document_start_arn
+  ssm_document_stop_arn           = var.ssm_document_stop_arn
+  ssm_maintenance_window_start_id = aws_ssm_maintenance_window.start_window.id
+  ssm_maintenance_window_stop_id  = aws_ssm_maintenance_window.stop_window.id
 }
