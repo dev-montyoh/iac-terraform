@@ -42,7 +42,8 @@ module "role_ssm_ec2" {
 ##  EC2 자동 재기동에 필요한 UserRole 에 설정하는 권한
 resource "aws_iam_role_policy_attachment" "attach_role_ssm_ec2" {
   role       = module.role_ssm_ec2.iam_role_info.name
-  policy_arn = lookup(data.aws_iam_policy.policies_custom_with_arn, "PolicyForSSMEC2").arn
+  # policy_arn = lookup(data.aws_iam_policy.policies_custom_with_arn, "PolicyForSSMEC2").arn
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 
   depends_on = [module.role_ssm_ec2, data.aws_iam_policy.policies_custom_with_arn]
 }
