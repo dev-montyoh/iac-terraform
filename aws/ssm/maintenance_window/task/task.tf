@@ -11,7 +11,8 @@ resource "aws_iam_policy" "ssm_maintenance_policy" {
         Action   = [
           "ssm:SendCommand",
           "ec2:StartInstances",
-          "ec2:StopInstances"
+          "ec2:StopInstances",
+          "ssm:StartAutomationExecution"  # 추가
         ]
         Resource = "*"
       }
