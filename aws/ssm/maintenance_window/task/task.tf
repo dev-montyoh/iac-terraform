@@ -4,11 +4,11 @@ resource "aws_iam_policy" "ssm_maintenance_policy" {
   description = "Policy for SSM Maintenance Window Tasks"
 
   policy = jsonencode({
-    Version = "2012-10-17"
+    Version   = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "ssm:SendCommand",
           "ec2:StartInstances",
           "ec2:StopInstances",
@@ -23,10 +23,10 @@ resource "aws_iam_policy" "ssm_maintenance_policy" {
 resource "aws_iam_role" "ssm_maintenance_role" {
   name               = "SSMMaintenanceRole"
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version   = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
+        Effect    = "Allow"
         Principal = {
           Service = "ssm.amazonaws.com"
         }
@@ -47,8 +47,8 @@ resource "aws_ssm_maintenance_window_task" "start_task" {
   task_type = "AUTOMATION"
 
   targets {
-    key = "WindowTargetIds"
-    values = [var.ssm_maintenance_window_target_start_id]
+    key    = "InstanceIds"
+    values = [var.ec2_instance_database_server_id]
   }
 
   priority        = 1
@@ -57,6 +57,17 @@ resource "aws_ssm_maintenance_window_task" "start_task" {
 
   # IAM Role 추가
   service_role_arn = aws_iam_role.ssm_maintenance_role.arn
+
+  task_invocation_parameters {
+    automation_parameters {
+      document_version = "$LATEST"
+
+      parameter {
+        name   = "InstanceId"
+        values = [var.ec2_instance_database_server_id]
+      }
+    }
+  }
 }
 
 resource "aws_ssm_maintenance_window_task" "stop_task" {
@@ -65,8 +76,8 @@ resource "aws_ssm_maintenance_window_task" "stop_task" {
   task_type = "AUTOMATION"
 
   targets {
-    key = "WindowTargetIds"
-    values = [var.ssm_maintenance_window_target_stop_id]
+    key    = "InstanceIds"
+    values = [var.ec2_instance_database_server_id]
   }
 
   priority        = 1
@@ -75,4 +86,15 @@ resource "aws_ssm_maintenance_window_task" "stop_task" {
 
   # IAM Role 추가
   service_role_arn = aws_iam_role.ssm_maintenance_role.arn
+
+  task_invocation_parameters {
+    automation_parameters {
+      document_version = "$LATEST"
+
+      parameter {
+        name   = "InstanceId"
+        values = [var.ec2_instance_database_server_id]
+      }
+    }
+  }
 }
