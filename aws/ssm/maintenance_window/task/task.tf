@@ -1,44 +1,42 @@
 # 테스트 임시 추가
-resource "aws_iam_policy" "ssm_maintenance_policy" {
-  name        = "SSMMaintenancePolicy"
-  description = "Policy for SSM Maintenance Window Tasks"
-
-  policy = jsonencode({
-    Version   = "2012-10-17"
+resource "aws_iam_policy" "ssm_task_policy" {
+  name        = "ssm_task_policy"
+  description = "Policy for Systems Manager to manage EC2 instances"
+  policy      = jsonencode({
+    Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow"
-        Action = [
-          "ssm:SendCommand",
+        Effect   = "Allow",
+        Action   = [
           "ec2:StartInstances",
-          "ec2:StopInstances",
-          "ssm:StartAutomationExecution"  # 추가
-        ]
-        Resource = "*"
+          "ec2:StopInstances"
+        ],
+        Resource = "arn:aws:ec2:*:*:instance/*" # 필요에 따라 특정 인스턴스로 제한 가능
       }
     ]
   })
 }
 
-resource "aws_iam_role" "ssm_maintenance_role" {
-  name               = "SSMMaintenanceRole"
+resource "aws_iam_role" "ssm_task_role" {
+  name = "ssm_task_role"
+
   assume_role_policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
       {
-        Effect    = "Allow"
+        Effect = "Allow",
         Principal = {
           Service = "ssm.amazonaws.com"
-        }
-        Action = ["sts:AssumeRole", "iam:PassRole"]
+        },
+        Action = "sts:AssumeRole"
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "ssm_maintenance_policy_attachment" {
-  role       = aws_iam_role.ssm_maintenance_role.name
-  policy_arn = aws_iam_policy.ssm_maintenance_policy.arn
+resource "aws_iam_role_policy_attachment" "attach_ssm_task_policy" {
+  role       = aws_iam_role.ssm_task_role.name
+  policy_arn = aws_iam_policy.ssm_task_policy.arn
 }
 
 resource "aws_ssm_maintenance_window_task" "start_task" {
@@ -90,8 +88,8 @@ resource "aws_ssm_maintenance_window_task" "stop_task" {
         values = [var.ec2_instance_database_server_id]
       }
       parameter {
-        name = "AutomationAssumeRole"
-        values = [aws_iam_role.ssm_maintenance_role.arn]
+        name   = "AutomationAssumeRole"
+        values = [aws_iam_role.ssm_task_role.arn]
       }
     }
   }
