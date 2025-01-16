@@ -2,7 +2,7 @@
 ### 오전 8시 시작
 resource "aws_ssm_maintenance_window" "start_window" {
   name                       = "EC2SchedulerWindowStart"
-  schedule                   = "cron(45 18 ? * * *)"
+  schedule                   = "cron(55 18 ? * * *)"
   schedule_timezone          = "Asia/Seoul"
   duration                   = 1
   cutoff                     = 0
@@ -13,7 +13,7 @@ resource "aws_ssm_maintenance_window" "start_window" {
 ### 오전 12시 종료
 resource "aws_ssm_maintenance_window" "stop_window" {
   name                       = "EC2SchedulerWindowStop"
-  schedule                   = "cron(40 18 ? * * *)"
+  schedule                   = "cron(50 18 ? * * *)"
   schedule_timezone          = "Asia/Seoul"
   duration                   = 1
   cutoff                     = 0

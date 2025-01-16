@@ -30,7 +30,7 @@ resource "aws_iam_role" "ssm_maintenance_role" {
         Principal = {
           Service = "ssm.amazonaws.com"
         }
-        Action = "sts:AssumeRole"
+        Action = ["sts:AssumeRole", "iam:PassRole"]
       }
     ]
   })
