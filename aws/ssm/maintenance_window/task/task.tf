@@ -43,7 +43,7 @@ resource "aws_iam_role_policy_attachment" "ssm_maintenance_policy_attachment" {
 resource "aws_ssm_maintenance_window_task" "start_task" {
   window_id = var.ssm_maintenance_window_start_id
   task_arn  = "AWS-StartEC2Instance"
-  task_type = "RUN_COMMAND"
+  task_type = "AUTOMATION"
 
   targets {
     key = "WindowTargetIds"
@@ -61,7 +61,7 @@ resource "aws_ssm_maintenance_window_task" "start_task" {
 resource "aws_ssm_maintenance_window_task" "stop_task" {
   window_id = var.ssm_maintenance_window_stop_id
   task_arn  = "AWS-StopEC2Instance"
-  task_type = "RUN_COMMAND"
+  task_type = "AUTOMATION"
 
   targets {
     key = "WindowTargetIds"
