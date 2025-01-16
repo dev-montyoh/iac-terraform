@@ -56,7 +56,7 @@ resource "aws_ssm_maintenance_window_task" "start_task" {
   max_errors      = "1"
 
   # IAM Role 추가
-  service_role_arn = aws_iam_role.ssm_maintenance_role.arn
+#  service_role_arn = aws_iam_role.ssm_maintenance_role.arn
 
   task_invocation_parameters {
     automation_parameters {
@@ -85,7 +85,7 @@ resource "aws_ssm_maintenance_window_task" "stop_task" {
   max_errors      = "1"
 
   # IAM Role 추가
-  service_role_arn = aws_iam_role.ssm_maintenance_role.arn
+#  service_role_arn = aws_iam_role.ssm_maintenance_role.arn
 
   task_invocation_parameters {
     automation_parameters {
