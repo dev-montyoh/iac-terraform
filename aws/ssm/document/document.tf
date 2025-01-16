@@ -1,6 +1,6 @@
 ##  EC2 자동 시작 설정
 resource "aws_ssm_document" "start_ec2_instances" {
-  name          = "StartEC2Instances"
+  name          = "StartEC2InstancesSSMDocument"
   document_type = "Automation"
   content = jsonencode({
     "schemaVersion" : "0.3",
@@ -26,7 +26,7 @@ resource "aws_ssm_document" "start_ec2_instances" {
 
 ##  EC2 자동 종료 설정
 resource "aws_ssm_document" "stop_ec2_instances" {
-  name          = "StopEC2Instances"
+  name          = "StopEC2InstancesSSMDocument"
   document_type = "Automation"
   content = jsonencode({
     "schemaVersion" : "0.3",
