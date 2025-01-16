@@ -70,6 +70,8 @@ resource "aws_ssm_maintenance_window_task" "stop_task" {
   task_arn  = "AWS-StopEC2Instance"
   task_type = "AUTOMATION"
 
+  service_role_arn = aws_iam_role.ssm_task_role.arn
+
   targets {
     key    = "InstanceIds"
     values = [var.ec2_instance_database_server_id]
