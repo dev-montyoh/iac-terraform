@@ -14,7 +14,7 @@ resource "aws_iam_policy" "ssm_task_policy" {
           "ssm:GetAutomationExecution",   # Automation 실행 상태 조회 권한
           "iam:PassRole"                  # 역할 전달 권한
         ],
-        Resource = "arn:aws:ec2:*:*:instance/*" # 필요에 따라 특정 인스턴스로 제한 가능
+        Resource: "*"
       }
     ]
   })
