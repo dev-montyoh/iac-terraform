@@ -10,6 +10,7 @@ resource "aws_iam_policy" "ssm_task_policy" {
         Action   = [
           "ec2:StopInstances",            # EC2 인스턴스 중지 권한
           "ec2:DescribeInstances",        # EC2 인스턴스 상태 조회 권한
+          "ec2:DescribeInstanceStatus",
           "ssm:StartAutomationExecution", # Automation 문서 실행 권한
           "ssm:GetAutomationExecution",   # Automation 실행 상태 조회 권한
           "iam:PassRole"                  # 역할 전달 권한
