@@ -13,8 +13,8 @@ module "iam" {
 }
 
 module "ec2" {
-  source = "./ec2"
-  VPC_ID = var.VPC_ID
+  source            = "./ec2"
+  VPC_ID            = var.VPC_ID
   role_ssm_ec2_name = module.iam.role_ssm_ec2.name
 
   depends_on = [module.iam]
@@ -22,8 +22,6 @@ module "ec2" {
 
 module "ssm" {
   source                          = "./ssm"
-  # role_name                       = module.iam.role_ssm_ec2.name
-  # role_arn                        = module.iam.role_ssm_ec2.arn
   ec2_instance_database_server_id = module.ec2.ec2_instance_database_server_id
-  depends_on = [module.ec2]
+  depends_on                      = [module.ec2]
 }
