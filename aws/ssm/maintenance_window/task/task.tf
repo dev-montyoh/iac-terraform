@@ -8,8 +8,11 @@ resource "aws_iam_policy" "ssm_task_policy" {
       {
         Effect   = "Allow",
         Action   = [
-          "ec2:StartInstances",
-          "ec2:StopInstances"
+          "ec2:StopInstances",            # EC2 인스턴스 중지 권한
+          "ec2:DescribeInstances",        # EC2 인스턴스 상태 조회 권한
+          "ssm:StartAutomationExecution", # Automation 문서 실행 권한
+          "ssm:GetAutomationExecution",   # Automation 실행 상태 조회 권한
+          "iam:PassRole"                  # 역할 전달 권한
         ],
         Resource = "arn:aws:ec2:*:*:instance/*" # 필요에 따라 특정 인스턴스로 제한 가능
       }
