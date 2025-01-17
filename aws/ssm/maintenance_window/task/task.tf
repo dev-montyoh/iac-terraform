@@ -85,19 +85,4 @@ resource "aws_ssm_maintenance_window_task" "stop_task" {
     key    = "WindowTargetIds"
     values = [var.ssm_maintenance_window_target_stop_id]
   }
-
-  task_invocation_parameters {
-    automation_parameters {
-      document_version = "$LATEST"
-
-      parameter {
-        name   = "InstanceId"
-        values = [var.ec2_instance_database_server_id]
-      }
-      parameter {
-        name   = "AutomationAssumeRole"
-        values = [aws_iam_role.ssm_task_role.arn]
-      }
-    }
-  }
 }
