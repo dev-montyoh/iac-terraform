@@ -43,9 +43,21 @@ module "user" {
 ## SSM 의 관리를 받을 수 있도록 하는 IAM Role
 ## 대상 EC2 인스턴스에 부여
 module "iam_role_ec2_managed_ssm" {
-  source = "./role"
-  name   = "IAMRoleEC2ManagedSSM"
-  path   = "/"
+  source             = "./role"
+  name               = "IAMRoleEC2ManagedSSM"
+  path               = "/"
+  assume_role_policy = {
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Effect    = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  }
 }
 
 #   IAM Role 과 Policy 연결
@@ -66,9 +78,21 @@ resource "aws_iam_instance_profile" "iam_instance_profile_ec2_managed_ssm" {
 
 ## SSM Maintenance Task 가 EC2 인스턴스를 관리할 수 있도록 하는 IAM Role
 module "iam_role_ssm_maintenance_task_manage_ec2" {
-  source = "./role"
-  name   = "IAMRoleSSMMaintenanceTaskManageEC2"
-  path   = "/"
+  source             = "./role"
+  name               = "IAMRoleSSMMaintenanceTaskManageEC2"
+  path               = "/"
+  assume_role_policy = {
+    Version   = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = {
+          Service = "ssm.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  }
 }
 
 #   IAM Role 과 Policy 연결
