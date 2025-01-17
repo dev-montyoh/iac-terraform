@@ -6,7 +6,7 @@
 ## 오전 8시 시작
 resource "aws_ssm_maintenance_window" "start_window" {
   name                       = "SSMMaintenanceWindowStartEC2"
-  schedule                   = "cron(30 13 ? * * *)"
+  schedule                   = "cron(37 13 ? * * *)"
   schedule_timezone          = "Asia/Seoul"
   duration                   = 1
   cutoff                     = 0

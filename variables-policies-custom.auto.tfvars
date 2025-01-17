@@ -8,6 +8,7 @@ policies_custom = {
         {
           Effect = "Allow",
           Action = [
+            "ec2:StartInstances",           # EC2 인스턴스 시작 권한
             "ec2:StopInstances",            # EC2 인스턴스 중지 권한
             "ec2:DescribeInstances",        # EC2 인스턴스 세부 정보 조회 권한
             "ec2:DescribeInstanceStatus",   # EC2 인스턴스 상태 조회 권한
