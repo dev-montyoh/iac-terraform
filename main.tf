@@ -1,3 +1,7 @@
+/*
+* AWS 기본 설정
+* **.auto.tfvars 값 전달
+*/
 module "aws" {
   source                = "./aws"
   groups                = var.groups
