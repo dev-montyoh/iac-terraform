@@ -1,7 +1,7 @@
 ## EC2 Instance 시작 시간 정의
 ### 오전 8시 시작
 resource "aws_ssm_maintenance_window" "start_window" {
-  name                       = "SSMMaintenanceWindowStartEC2",
+  name                       = "SSMMaintenanceWindowStartEC2"
   schedule                   = "cron(0 8 ? * * *)"
   schedule_timezone          = "Asia/Seoul"
   duration                   = 1
@@ -13,7 +13,7 @@ resource "aws_ssm_maintenance_window" "start_window" {
 ### 오전 12시 종료
 resource "aws_ssm_maintenance_window" "stop_window" {
   name                       = "SSMMaintenanceWindowStopEC2"
-  schedule                   = "cron(35 9 ? * * *)"
+  schedule                   = "cron(40 9 ? * * *)"
   schedule_timezone          = "Asia/Seoul"
   duration                   = 1
   cutoff                     = 0
