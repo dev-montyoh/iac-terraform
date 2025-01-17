@@ -13,7 +13,7 @@ resource "aws_ssm_maintenance_window" "start_window" {
 ### 오전 12시 종료
 resource "aws_ssm_maintenance_window" "stop_window" {
   name                       = "SSMMaintenanceWindowStopEC2"
-  schedule                   = "cron(40 9 ? * * *)"
+  schedule                   = "cron(47 9 ? * * *)"
   schedule_timezone          = "Asia/Seoul"
   duration                   = 1
   cutoff                     = 0
