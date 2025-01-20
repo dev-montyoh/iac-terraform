@@ -11,7 +11,7 @@ module "security_group" {
 # EC2 인스턴스
 ## DB 서버 전용 인스턴스
 ## Amazon Linux 2023 AMI
-module "ec2_db_server_instance" {
+module "ec2_database_server_instance" {
   source                 = "./instance"
   ami                    = "ami-049788618f07e189d"
   instance_name          = "database_server"
