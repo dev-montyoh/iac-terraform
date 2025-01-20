@@ -26,7 +26,7 @@ module "budgets_budget_100_actual" {
 ## 100퍼센트 도달 예정 알림
 module "budgets_budget_100_forecasted" {
   source = "./budget"
-  name                  = "budgets_budget_100_actual"
+  name                  = "budgets_budget_100_forecasted"
   limit_amount          = "20"
   notification_type     = "FORECASTED"
   threshold             = 100
