@@ -28,3 +28,8 @@ module "ssm" {
   iam_role_ssm_maintenance_task_manage_ec2_arn = module.iam.iam_role_ssm_maintenance_task_manage_ec2_arn
   depends_on                                   = [module.iam, module.ec2]
 }
+
+module "billing" {
+  source                = "./billing"
+  BUDGETS_ALARM_TARGETS = var.BUDGETS_ALARM_TARGETS
+}

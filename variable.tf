@@ -1,6 +1,6 @@
 variable "groups" {
   type = map(object({
-    name = string
+    name         = string
     policies_aws = list(string)
   }))
 }
@@ -15,11 +15,11 @@ variable "policies_custom" {
   type = map(object({
     name        = string
     description = string
-    policy = object({
-      Version = string
+    policy      = object({
+      Version   = string
       Statement = list(object({
         Effect   = string
-        Action = list(string)
+        Action   = list(string)
         Resource = string
       }))
     })
@@ -28,9 +28,9 @@ variable "policies_custom" {
 
 variable "users" {
   type = map(object({
-    name  = string
-    path  = string
-    email = string
+    name   = string
+    path   = string
+    email  = string
     groups = list(string)
   }))
 }
@@ -38,3 +38,4 @@ variable "users" {
 variable "AWS_ACCESS_KEY_ID" { type = string }
 variable "AWS_SECRET_ACCESS_KEY" { type = string }
 variable "VPC_ID" { type = string }
+variable "BUDGETS_ALARM_TARGETS" { type = list(string) }
