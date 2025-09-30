@@ -20,3 +20,14 @@ resource "aws_security_group" "security_group_ssh" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_security_group" "security_group_database" {
+  name = "security_group_database"
+  description = "Allow Database traffic"
+  vpc_id = var.VPC_ID
+
+  # 들어오는 요청에 대해 4001, 4002 지정
+  ingress {
+
+  }
+}
