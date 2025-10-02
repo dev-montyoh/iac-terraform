@@ -29,16 +29,8 @@ resource "aws_security_group" "security_group_database" {
   # 들어오는 요청에 대해 4001, 4002 지정
   ingress {
     description = "Allow TCP on 4001"
-    from_port   = 4001
-    to_port     = 4001
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "Allow TCP on 4001"
-    from_port   = 4002
-    to_port     = 4002
+    from_port   = 3000
+    to_port     = 3000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
