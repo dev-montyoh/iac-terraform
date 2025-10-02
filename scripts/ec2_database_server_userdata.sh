@@ -9,7 +9,8 @@ dnf install https://dev.mysql.com/get/mysql80-community-release-el9-5.noarch.rpm
 dnf install mysql-community-server -y
 
 ## mysql 실행 설정
-systemctl start mysqld
+sed -i 's/^port.*/port=4001/' /etc/my.cnf
+sed -i 's/^bind-address.*/bind-address=0.0.0.0/' /etc/my.cnf
 systemctl enable --now mysqld
 
 # Redis 설치
@@ -17,5 +18,7 @@ systemctl enable --now mysqld
 dnf install redis6 -y
 
 ## redis 실행 설정
-systemctl start redis6
+sed -i 's/^port .*/port 4002/' /etc/redis6.conf
+sed -i 's/^bind .*/bind 0.0.0.0/' /etc/redis6.conf
+sed -i 's/^protected-mode .*/protected-mode no/' /etc/redis6.conf
 systemctl enable --now redis6
