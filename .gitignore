@@ -38,3 +38,7 @@ terraform.rc
 
 # AWS IAM account info
 *.csv
+
+# IntelliJ
+*.iml
+*.idea
