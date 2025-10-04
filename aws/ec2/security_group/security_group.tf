@@ -9,7 +9,7 @@ resource "aws_security_group" "security_group_ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["202.8.191.103/32, 121.132.207.251/32"]
+    cidr_blocks = ["202.8.191.103/32", "121.132.207.251/32"]
   }
 
   # 나가는 응답에 대해 모두 허용
