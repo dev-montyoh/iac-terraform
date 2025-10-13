@@ -26,9 +26,9 @@ resource "aws_security_group" "security_group_database" {
   description = "Allow Database traffic"
   vpc_id      = var.VPC_ID
 
-  # 들어오는 요청에 대해 4001, 4002 지정
+  # 들어오는 요청에 대해 3000 지정
   ingress {
-    description = "Allow TCP on 4001"
+    description = "Allow TCP on 3000"
     from_port   = 3000
     to_port     = 3000
     protocol    = "tcp"

@@ -15,11 +15,17 @@ module "iam" {
   users           = var.users
 }
 
+module "key_pair" {
+  source                 = "./key_pair"
+  AWS_EC2_SSH_PUBLIC_KEY = var.AWS_EC2_SSH_PUBLIC_KEY
+}
+
 module "ec2" {
   source                                    = "./ec2"
   VPC_ID                                    = var.VPC_ID
   iam_instance_profile_ec2_managed_ssm_name = module.iam.iam_instance_profile_ec2_managed_ssm_name
-  depends_on                                = [module.iam]
+  key_pair_name                             = module.key_pair.aws_ec2_ssh_public_key.key_name
+  depends_on                                = [module.iam, module.key_pair]
   AWS_EC2_SSH_ALLOWED_IPS                   = var.AWS_EC2_SSH_ALLOWED_IPS
 }
 
