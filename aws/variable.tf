@@ -35,8 +35,6 @@ variable "users" {
   }))
 }
 
-variable "AWS_ACCESS_KEY_ID" { type = string }
-variable "AWS_SECRET_ACCESS_KEY" { type = string }
 variable "VPC_ID" { type = string }
 variable "BUDGETS_ALARM_TARGETS" { type = list(string) }
 variable "AWS_EC2_SSH_ALLOWED_IPS" { type = list(string) }

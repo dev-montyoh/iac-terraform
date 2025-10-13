@@ -1,12 +1,6 @@
 /*
 * AWS 에서 사용중인 서비스들에 대한 module 호출
 */
-provider "aws" {
-  region     = "ap-northeast-2"
-  access_key = var.AWS_ACCESS_KEY_ID
-  secret_key = var.AWS_SECRET_ACCESS_KEY
-}
-
 module "iam" {
   source          = "./iam"
   groups          = var.groups
