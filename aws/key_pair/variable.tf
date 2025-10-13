@@ -1,0 +1,1 @@
+variable "AWS_EC2_SSH_PUBLIC_KEY" { type = string }

@@ -20,5 +20,6 @@ module "ec2_database_server_instance" {
   user_data              = file("scripts/ec2_userdata.sh")
   profile_name           = var.iam_instance_profile_ec2_managed_ssm_name
   vpc_security_group_ids = [module.security_group.ec2_security_group_ssh_info.id]
+  key_pair_name          = var.key_pair_name
   depends_on             = [module.security_group]
 }

@@ -13,6 +13,7 @@ module "aws" {
   VPC_ID                  = var.VPC_ID
   BUDGETS_ALARM_TARGETS   = var.BUDGETS_ALARM_TARGETS
   AWS_EC2_SSH_ALLOWED_IPS = var.AWS_EC2_SSH_ALLOWED_IPS
+  AWS_EC2_SSH_PUBLIC_KEY  = var.AWS_EC2_SSH_PUBLIC_KEY
 }
 
 terraform {
