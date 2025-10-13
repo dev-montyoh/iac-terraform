@@ -11,8 +11,9 @@ resource "aws_instance" "ec2_instance" {
   }
 
   # 강제 종료 및 강제 삭제 금지
-  disable_api_termination = true
-  lifecycle {
-    prevent_destroy = true
-  }
+  # TODO: ec2 설정이 끝나면 활성화할 것
+  # disable_api_termination = true
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
 }
