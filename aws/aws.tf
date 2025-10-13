@@ -20,6 +20,7 @@ module "ec2" {
   VPC_ID                                    = var.VPC_ID
   iam_instance_profile_ec2_managed_ssm_name = module.iam.iam_instance_profile_ec2_managed_ssm_name
   depends_on                                = [module.iam]
+  AWS_EC2_SSH_ALLOWED_IPS                   = var.AWS_EC2_SSH_ALLOWED_IPS
 }
 
 module "ssm" {

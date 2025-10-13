@@ -4,8 +4,9 @@
 
 # 보안 그룹
 module "security_group" {
-  source = "./security_group"
-  VPC_ID = var.VPC_ID
+  source                  = "./security_group"
+  VPC_ID                  = var.VPC_ID
+  AWS_EC2_SSH_ALLOWED_IPS = var.AWS_EC2_SSH_ALLOWED_IPS
 }
 
 # EC2 인스턴스
