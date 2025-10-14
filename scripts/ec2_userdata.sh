@@ -22,3 +22,13 @@ sed -i 's/^port .*/port 4002/' /etc/redis6.conf
 sed -i 's/^bind .*/bind 0.0.0.0/' /etc/redis6.conf
 sed -i 's/^protected-mode .*/protected-mode no/' /etc/redis6.conf
 systemctl enable --now redis6
+
+# Docker 설치
+## Install docker
+dnf install docker -y
+
+## Start and enable Docker service
+systemctl enable --now docker
+
+## Add ec2-user to the docker group to run docker commands without sudo
+usermod -a -G docker ec2-user
