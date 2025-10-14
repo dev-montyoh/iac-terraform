@@ -13,11 +13,11 @@ jobs:
     steps:
       # 코드 체크아웃
       - name: 'Checkout'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       # Terraform 세팅
       - name: 'Set up Terraform'
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
 
       # Terraform 초기화 및 검증
       - name: 'Terraform Init'
