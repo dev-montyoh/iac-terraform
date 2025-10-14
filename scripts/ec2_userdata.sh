@@ -29,6 +29,4 @@ dnf install docker -y
 
 ## Start and enable Docker service
 systemctl enable --now docker
-
-## Add ec2-user to the docker group to run docker commands without sudo
 usermod -a -G docker ec2-user
