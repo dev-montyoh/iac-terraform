@@ -23,9 +23,15 @@ module "ec2" {
   AWS_EC2_SSH_ALLOWED_IPS                   = var.AWS_EC2_SSH_ALLOWED_IPS
 }
 
+module "elastic_ip" {
+  source                         = "./elastic_ip"
+  ec2_instance_service_server_id = module.ec2.ec2_instance_service_server_id
+  depends_on                     = [module.ec2]
+}
+
 module "ssm" {
   source                                       = "./ssm"
-  ec2_instance_database_server_id              = module.ec2.ec2_instance_database_server_id
+  ec2_instance_database_server_id              = module.ec2.ec2_instance_service_server_id
   iam_role_ssm_maintenance_task_manage_ec2_arn = module.iam.iam_role_ssm_maintenance_task_manage_ec2_arn
   depends_on                                   = [module.iam, module.ec2]
 }
