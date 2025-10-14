@@ -4,7 +4,6 @@
 
 # AWS EIP 생성
 resource "aws_eip" "service_server_eip" {
-  vpc = true
 }
 
 # AWS EIP 생성 및 연결
