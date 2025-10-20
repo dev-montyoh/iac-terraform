@@ -1,6 +1,3 @@
-/*
-* 기본 Provider 설정
-*/
 terraform {
   required_providers {
     # Amazon Web Services
@@ -8,15 +5,11 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.16"
     }
-
-    # Cloudflare
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "~> 5"
+      version = "5.11.0"
     }
   }
-
-  required_version = ">= 1.2.0"
 }
 
 # AWS
@@ -24,6 +17,12 @@ provider "aws" {
   region     = "ap-northeast-2"
   access_key = var.AWS_ACCESS_KEY_ID
   secret_key = var.AWS_SECRET_ACCESS_KEY
+}
+
+provider "cloudflare" {
+  email     = var.CLOUDFLARE_EMAIL
+  api_token = var.CLOUDFLARE_API_TOKEN
+  api_key   = var.CLOUDFLARE_API_KEY
 }
 
 module "aws" {
@@ -38,13 +37,9 @@ module "aws" {
   AWS_EC2_SSH_PUBLIC_KEY  = var.AWS_EC2_SSH_PUBLIC_KEY
 }
 
-# CloudFlare
-provider "cloudflare" {
-  api_token = var.CLOUDFLARE_API_KEY
-}
-
 module "cloudflare" {
-  source = "./cloudflare"
+  source                   = "./cloudflare"
   service_server_public_ip = module.aws.service_server_public_ip
-  depends_on = [module.aws]
+  depends_on               = [module.aws]
+  CLOUDFLARE_ZONE_ID       = var.CLOUDFLARE_ZONE_ID
 }
