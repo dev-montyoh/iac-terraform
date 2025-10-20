@@ -21,16 +21,23 @@ resource "aws_security_group" "security_group_ssh" {
   }
 }
 
-resource "aws_security_group" "security_group_database" {
-  name        = "security_group_database"
+resource "aws_security_group" "security_group_web" {
+  name        = "security_group_web"
   description = "Allow Database traffic"
   vpc_id      = var.VPC_ID
 
-  # 들어오는 요청에 대해 3000 지정
   ingress {
-    description = "Allow TCP on 3000"
-    from_port   = 3000
-    to_port     = 3000
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTPS"
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
