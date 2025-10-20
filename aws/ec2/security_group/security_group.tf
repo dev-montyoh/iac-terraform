@@ -9,7 +9,8 @@ resource "aws_security_group" "security_group_ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = var.AWS_EC2_SSH_ALLOWED_IPS
+    # cidr_blocks = var.AWS_EC2_SSH_ALLOWED_IPS
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   # 나가는 응답에 대해 모두 허용
