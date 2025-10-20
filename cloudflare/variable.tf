@@ -1,0 +1,1 @@
+variable "service_server_public_ip" { type = string }
