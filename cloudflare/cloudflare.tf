@@ -14,9 +14,4 @@ resource "cloudflare_dns_record" "dev_monty_web" {
   comment = "www.dev_monty.me record"
   content = var.service_server_public_ip
   proxied = true
-  settings = {
-    ipv4_only = true
-    ipv6_only = true
-  }
-  tags = ["owner:dns-team"]
 }
