@@ -45,4 +45,6 @@ provider "cloudflare" {
 
 module "cloudflare" {
   source = "./cloudflare"
+  service_server_public_ip = module.aws.service_server_public_ip
+  depends_on = [module.aws]
 }
