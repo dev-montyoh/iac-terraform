@@ -21,17 +21,3 @@ chmod +x /usr/local/bin/docker-compose
 # 앱 디렉토리 생성
 mkdir -p /home/ec2-user/app
 cd /home/ec2-user/app
-
-# docker-compose.yml 생성
-cat <<EOF > docker-compose.yml
-version: "3.9"
-services:
-  nginx:
-    image: ghcr.io/dev-montyoh/backend-proxy-server:latest
-    ports:
-      - "80:80"
-EOF
-
-# 컨테이너 실행
-docker-compose pull
-docker-compose up -d
