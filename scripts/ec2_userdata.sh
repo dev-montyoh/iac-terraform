@@ -11,6 +11,7 @@ dnf install docker -y
 systemctl enable --now docker
 usermod -a -G docker ec2-user
 
+
 # ----------------------
 # Docker Compose 설치
 # ----------------------
