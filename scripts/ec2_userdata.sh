@@ -21,3 +21,8 @@ chmod +x /usr/local/bin/docker-compose
 # 앱 디렉토리 생성
 mkdir -p /home/ec2-user/app
 cd /home/ec2-user/app
+
+# docker-compose.yml 다운로드 및 실행
+curl -L -o docker-compose.yml https://raw.githubusercontent.com/dev-montyoh/iac-terraform/refs/heads/master/docker-compose.yml
+docker-compose pull
+docker-compose up -d
