@@ -22,7 +22,6 @@ provider "aws" {
 provider "cloudflare" {
   email     = var.CLOUDFLARE_EMAIL
   api_token = var.CLOUDFLARE_API_TOKEN
-  api_key   = var.CLOUDFLARE_API_KEY
 }
 
 module "aws" {
@@ -42,4 +41,5 @@ module "cloudflare" {
   service_server_public_ip = module.aws.service_server_public_ip
   depends_on               = [module.aws]
   CLOUDFLARE_ZONE_ID       = var.CLOUDFLARE_ZONE_ID
+  CLOUDFLARE_ACCOUNT_ID    = var.CLOUDFLARE_ACCOUNT_ID
 }
