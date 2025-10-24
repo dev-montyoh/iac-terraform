@@ -24,9 +24,3 @@ resource "cloudflare_r2_bucket" "cloudflare-bucket" {
   location   = "APAC"
   lifecycle { prevent_destroy = true }
 }
-
-# D1 데이터베이스
-module "d1_databases" {
-  source                = "./d1"
-  CLOUDFLARE_ACCOUNT_ID = var.CLOUDFLARE_ACCOUNT_ID
-}
