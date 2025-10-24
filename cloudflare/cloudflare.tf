@@ -1,11 +1,12 @@
 terraform {
   required_providers {
     cloudflare = {
-      source  = "cloudflare/cloudflare"
+      source = "cloudflare/cloudflare"
     }
   }
 }
 
+# 도메인 설정
 resource "cloudflare_dns_record" "dev_monty_web" {
   zone_id = var.CLOUDFLARE_ZONE_ID
   name    = "www.dev-monty.me"
@@ -16,8 +17,16 @@ resource "cloudflare_dns_record" "dev_monty_web" {
   proxied = true
 }
 
+# R2 버킷
 resource "cloudflare_r2_bucket" "cloudflare-bucket" {
   account_id = var.CLOUDFLARE_ACCOUNT_ID
   name       = "backend-api-database-bucket"
   location   = "APAC"
+  lifecycle { prevent_destroy = true }
+}
+
+# D1 데이터베이스
+module "d1_databases" {
+  source                = "./d1"
+  CLOUDFLARE_ACCOUNT_ID = var.CLOUDFLARE_ACCOUNT_ID
 }
