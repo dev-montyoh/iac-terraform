@@ -25,15 +25,16 @@ provider "cloudflare" {
 }
 
 module "aws" {
-  source                  = "./aws"
-  groups                  = var.groups
-  policies_aws            = var.policies_aws
-  policies_custom         = var.policies_custom
-  users                   = var.users
-  VPC_ID                  = var.VPC_ID
-  BUDGETS_ALARM_TARGETS   = var.BUDGETS_ALARM_TARGETS
-  AWS_EC2_SSH_ALLOWED_IPS = var.AWS_EC2_SSH_ALLOWED_IPS
-  AWS_EC2_SSH_PUBLIC_KEY  = var.AWS_EC2_SSH_PUBLIC_KEY
+  source                      = "./aws"
+  groups                      = var.groups
+  policies_aws                = var.policies_aws
+  policies_custom             = var.policies_custom
+  users                       = var.users
+  VPC_ID                      = var.VPC_ID
+  BUDGETS_ALARM_TARGETS       = var.BUDGETS_ALARM_TARGETS
+  AWS_EC2_SSH_ALLOWED_IPS     = var.AWS_EC2_SSH_ALLOWED_IPS
+  AWS_EC2_SSH_PUBLIC_KEY      = var.AWS_EC2_SSH_PUBLIC_KEY
+  AWS_EC2_USERDATA_GHCR_TOKEN = var.AWS_EC2_USERDATA_GHCR_TOKEN
 }
 
 module "cloudflare" {

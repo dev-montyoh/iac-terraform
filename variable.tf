@@ -44,6 +44,6 @@ variable "AWS_EC2_SSH_ALLOWED_IPS" { type = list(string) }
 variable "AWS_EC2_SSH_PUBLIC_KEY" { type = string }
 variable "CLOUDFLARE_EMAIL" { type = string }
 variable "CLOUDFLARE_API_TOKEN" { type = string }
-variable "CLOUDFLARE_API_KEY" { type = string }
 variable "CLOUDFLARE_ZONE_ID" { type = string }
 variable "CLOUDFLARE_ACCOUNT_ID" { type = string }
+variable "AWS_EC2_USERDATA_GHCR_TOKEN" { type = string }
