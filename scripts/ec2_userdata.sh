@@ -1,6 +1,11 @@
 #!/bin/bash
 dnf update -y
 
+# ----------------------
+# Github Registry 세팅
+# ----------------------
+echo "${AWS_EC2_USERDATA_GHCR_TOKEN}" | docker login ghcr.io -u dev-montyoh --password-stdin
+
 
 # ----------------------
 # Docker 설치
@@ -14,7 +19,7 @@ usermod -a -G docker ec2-user
 
 
 # ----------------------
-# Docker Compose 설치
+# Docker Compose 설치 및 실행
 # ----------------------
 # Install Docker Compose
 curl -L "https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose

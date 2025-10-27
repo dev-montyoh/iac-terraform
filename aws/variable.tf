@@ -39,3 +39,4 @@ variable "VPC_ID" { type = string }
 variable "BUDGETS_ALARM_TARGETS" { type = list(string) }
 variable "AWS_EC2_SSH_ALLOWED_IPS" { type = list(string) }
 variable "AWS_EC2_SSH_PUBLIC_KEY" { type = string }
+variable "AWS_EC2_USERDATA_GHCR_TOKEN" { type = string }
