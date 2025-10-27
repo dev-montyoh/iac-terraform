@@ -1,11 +1,6 @@
 #!/bin/bash
 dnf update -y
 
-# ----------------------
-# Github Registry 세팅
-# ----------------------
-echo "${AWS_EC2_USERDATA_GHCR_TOKEN}" | docker login ghcr.io -u dev-montyoh --password-stdin
-
 
 # ----------------------
 # Docker 설치
@@ -16,6 +11,12 @@ dnf install docker -y
 ## Start and enable Docker service
 systemctl enable --now docker
 usermod -a -G docker ec2-user
+
+
+# ----------------------
+# Github Registry 세팅
+# ----------------------
+echo "${AWS_EC2_USERDATA_GHCR_TOKEN}" | docker login ghcr.io -u dev-montyoh --password-stdin
 
 
 # ----------------------
