@@ -3,7 +3,7 @@ name: 'Terraform Validate on PR to develop'
 on:
   pull_request:
     branches:
-      - 'master'
+      - 'develop'
 
 jobs:
   terraform-validate:
