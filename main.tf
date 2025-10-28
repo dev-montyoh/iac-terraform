@@ -18,8 +18,6 @@ terraform {
       name = "iac-terraform"
     }
   }
-
-  required_version = ">= 1.5.0"
 }
 
 # AWS
