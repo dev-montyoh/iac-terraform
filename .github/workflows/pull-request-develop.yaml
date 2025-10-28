@@ -3,17 +3,36 @@ name: 'Terraform Validate on PR to develop'
 on:
   pull_request:
     branches:
-      - 'develop'
+      - 'master'
 
 jobs:
   terraform-validate:
     name: 'Terraform Validate'
     runs-on: ubuntu-latest
 
+    env:
+      # 기본 인증정보
+      TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+      AWS_REGION: ap-northeast-2
+
     steps:
       # 코드 체크아웃
-      - name: 'Checkout'
+      - name: Check out repository
         uses: actions/checkout@v5
+
+      # 외부 private secrets store 접근
+      - name: Check out Secrets store
+        uses: actions/checkout@v5
+        with:
+          repository: 'dev-montyoh/secrets-store'
+          token: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
+          path: secrets-store
+
+      # 외부 private secrets store 로드
+      - name: Load secrets
+        uses: ./secrets-store/.github/actions/load-secrets
+        with:
+          SECRETS_STORE_ACCESS_TOKEN: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
 
       # Terraform 세팅
       - name: 'Set up Terraform'
@@ -25,3 +44,6 @@ jobs:
 
       - name: 'Terraform Validate'
         run: terraform validate
+
+      - name: 'Terraform Plan'
+        run: terraform plan
