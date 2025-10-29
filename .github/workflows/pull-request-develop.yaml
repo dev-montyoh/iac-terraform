@@ -10,6 +10,7 @@ env:
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "iac-terraform"
   CONFIG_DIRECTORY: "./"
+  AWS_ACCESS_KEY_ID: "TEST"
 
 jobs:
   terraform-validate:
@@ -73,9 +74,11 @@ jobs:
               return comment.user.type === 'Bot' && comment.body.includes('HCP Terraform Plan Output')
             });
             const output = `#### HCP Terraform Plan Output
+                
                 \`\`\`
                 Plan: ${{ steps.plan-output.outputs.add }} to add, ${{ steps.plan-output.outputs.change }} to change, ${{ steps.plan-output.outputs.destroy }} to destroy.
                 \`\`\`
+            
                 [HCP Terraform Plan](${{ steps.plan-run.outputs.run_link }})
                 `;
             // 3. Delete previous comment so PR timeline makes sense
