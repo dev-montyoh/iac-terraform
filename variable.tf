@@ -36,14 +36,47 @@ variable "users" {
 }
 
 # SECRET VALUES
-variable "AWS_ACCESS_KEY_ID" { type = string }
-variable "AWS_SECRET_ACCESS_KEY" { type = string }
-variable "VPC_ID" { type = string }
-variable "BUDGETS_ALARM_TARGETS" { type = list(string) }
-variable "AWS_EC2_SSH_ALLOWED_IPS" { type = list(string) }
-variable "AWS_EC2_SSH_PUBLIC_KEY" { type = string }
-variable "CLOUDFLARE_EMAIL" { type = string }
-variable "CLOUDFLARE_API_TOKEN" { type = string }
-variable "CLOUDFLARE_ZONE_ID" { type = string }
-variable "CLOUDFLARE_ACCOUNT_ID" { type = string }
-variable "AWS_EC2_USERDATA_GHCR_TOKEN" { type = string }
+variable "AWS_ACCESS_KEY_ID" {
+  type      = string
+  sensitive = true
+}
+variable "AWS_SECRET_ACCESS_KEY" {
+  type      = string
+  sensitive = true
+}
+variable "VPC_ID" {
+  type      = string
+  sensitive = true
+}
+variable "BUDGETS_ALARM_TARGETS" {
+  type      = list(string)
+  sensitive = true
+}
+variable "AWS_EC2_SSH_ALLOWED_IPS" {
+  type      = list(string)
+  sensitive = true
+}
+variable "AWS_EC2_SSH_PUBLIC_KEY" {
+  type      = string
+  sensitive = true
+}
+variable "CLOUDFLARE_EMAIL" {
+  type      = string
+  sensitive = true
+}
+variable "CLOUDFLARE_API_TOKEN" {
+  type      = string
+  sensitive = true
+}
+variable "CLOUDFLARE_ZONE_ID" {
+  type      = string
+  sensitive = true
+}
+variable "CLOUDFLARE_ACCOUNT_ID" {
+  type      = string
+  sensitive = true
+}
+variable "AWS_EC2_USERDATA_GHCR_TOKEN" {
+  type      = string
+  sensitive = true
+}
