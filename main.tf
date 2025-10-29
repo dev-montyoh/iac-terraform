@@ -11,13 +11,13 @@ terraform {
     }
   }
 
-  //  테라폼 클라우드 설정
-  cloud {
-    organization = "dev-monty"
-    workspaces {
-      name = "iac-terraform"
-    }
-  }
+  # //  테라폼 클라우드 설정
+  # cloud {
+  #   organization = "dev-monty"
+  #   workspaces {
+  #     name = "iac-terraform"
+  #   }
+  # }
 }
 
 # AWS
