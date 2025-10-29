@@ -61,7 +61,7 @@ jobs:
         uses: actions/github-script@v8
         id: plan-comment
         with:
-          github-token: ${{ secrets.DOCKER_REGISTRY_ACCESS_TOKEN }}
+          github-token: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
           script: |
             // 1. Retrieve existing bot comments for the PR
             const { data: comments } = await github.rest.issues.listComments({
