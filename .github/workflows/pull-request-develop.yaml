@@ -40,6 +40,11 @@ jobs:
         with:
           terraform_version: 1.6.3
 
+      # Terraform Init
+      - name: Terraform Init
+        run: |
+          terraform init
+
       # Terraform plan
       - name: Terraform Plan
         run: |
