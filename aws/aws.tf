@@ -21,6 +21,7 @@ module "ec2" {
   key_pair_name                             = module.key_pair.aws_ec2_ssh_public_key.key_name
   depends_on                                = [module.iam, module.key_pair]
   AWS_EC2_SSH_ALLOWED_IPS                   = var.AWS_EC2_SSH_ALLOWED_IPS
+  AWS_EC2_USERDATA_GHCR_TOKEN               = var.AWS_EC2_USERDATA_GHCR_TOKEN
 }
 
 module "elastic_ip" {

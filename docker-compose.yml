@@ -9,6 +9,15 @@ services:
       backend-network:
     restart: always
 
+  frontend-portfolio:
+    image: ghcr.io/dev-montyoh/frontend-portfolio:latest
+    container_name: frontend-portfolio
+    ports:
+      - "8080:8080"
+    networks:
+      backend-network:
+    restart: always
+
 networks:
   backend-network:
     driver: bridge

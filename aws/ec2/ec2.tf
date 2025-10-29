@@ -17,7 +17,7 @@ module "ec2_service_server_instance" {
   ami                    = "ami-049788618f07e189d"
   instance_name          = "service_server"
   instance_type          = "t2.micro"
-  user_data              = file("scripts/ec2_userdata.sh")
+  user_data              = templatefile("scripts/ec2_userdata.sh", { AWS_EC2_USERDATA_GHCR_TOKEN = var.AWS_EC2_USERDATA_GHCR_TOKEN })
   profile_name           = var.iam_instance_profile_ec2_managed_ssm_name
   vpc_security_group_ids = [module.security_group.ec2_security_group_ssh_info.id, module.security_group.ec2_security_group_web_info.id]
   key_pair_name          = var.key_pair_name
