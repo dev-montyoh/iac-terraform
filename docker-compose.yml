@@ -1,5 +1,6 @@
 version: "3.9"
 services:
+  # 백엔드
   backend-proxy-server:
     image: ghcr.io/dev-montyoh/backend-proxy-server:latest
     container_name: backend-proxy-server
@@ -9,6 +10,19 @@ services:
       backend-network:
     restart: always
 
+  # gateway
+  backend-api-server-gateway:
+    image: ghcr.io/dev-montyoh/backend-api-server-gateway:latest
+    container_name: backend-api-server-gateway
+    ports:
+      - "3000:3000"
+    networks:
+      backend-network:
+    restart: always
+    environment:
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+
+  # 프론트
   frontend-portfolio:
     image: ghcr.io/dev-montyoh/frontend-portfolio:latest
     container_name: frontend-portfolio
