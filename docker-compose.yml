@@ -20,6 +20,7 @@ services:
       backend-network:
     restart: always
     environment:
+      SPRING_PROFILES_ACTIVE: prod
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 
   # payment
@@ -32,6 +33,7 @@ services:
       backend-network:
     restart: always
     environment:
+      SPRING_PROFILES_ACTIVE: prod
       PAYMENT_INICIS_SIGN_KEY: ${PAYMENT_INICIS_SIGN_KEY}
       PAYMENT_INICIS_MID: ${PAYMENT_INICIS_MID}
       PAYMENT_INICIS_INIAPIKEY: ${PAYMENT_INICIS_INIAPIKEY}
