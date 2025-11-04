@@ -22,6 +22,20 @@ services:
     environment:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 
+  # payment
+  backend-api-server-payment:
+    image: ghcr.io/dev-montyoh/backend-api-server-payment:latest
+    container_name: backend-api-server-payment
+    ports:
+      - "3003:3003"
+    networks:
+      backend-network:
+    restart: always
+    environment:
+      PAYMENT_INICIS_SIGN_KEY: ${PAYMENT_INICIS_SIGN_KEY}
+      PAYMENT_INICIS_MID: ${PAYMENT_INICIS_MID}
+      PAYMENT_INICIS_INIAPIKEY: ${PAYMENT_INICIS_INIAPIKEY}
+
   # 프론트
   frontend-portfolio:
     image: ghcr.io/dev-montyoh/frontend-portfolio:latest
