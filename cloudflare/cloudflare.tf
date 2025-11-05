@@ -7,6 +7,7 @@ terraform {
 }
 
 # 도메인 설정
+##  메인 도메인 - 웹 접속
 resource "cloudflare_dns_record" "dev_monty_web" {
   zone_id = var.CLOUDFLARE_ZONE_ID
   name    = "www.dev-monty.me"
@@ -15,6 +16,17 @@ resource "cloudflare_dns_record" "dev_monty_web" {
   comment = "www.dev_monty.me record"
   content = var.service_server_public_ip
   proxied = true
+}
+
+##  서브 도메인 - SSH 접속
+resource "cloudflare_dns_record" "dev_monty_ssh" {
+  zone_id = var.CLOUDFLARE_ZONE_ID
+  name    = "ssh.dev-monty.me"
+  ttl     = 1
+  type    = "A"
+  comment = "ssh.dev-monty.me record"
+  content = var.service_server_public_ip
+  proxied = false
 }
 
 # R2 버킷
