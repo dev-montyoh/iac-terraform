@@ -20,3 +20,14 @@ resource "aws_lightsail_static_ip_attachment" "aws_lightsail_static_ip_attachmen
   instance_name  = aws_lightsail_instance.db_instance.name
   static_ip_name = aws_lightsail_static_ip.database_lightsail_static_ip.name
 }
+
+resource "aws_lightsail_instance_public_ports" "db_firewall" {
+  instance_name = aws_lightsail_instance.db_instance.name
+
+  port_info {
+    protocol  = "tcp"
+    from_port = 5432
+    to_port   = 5432
+    cidrs     = ["0.0.0.0/0"]
+  }
+}
