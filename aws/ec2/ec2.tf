@@ -10,14 +10,26 @@ module "security_group" {
 }
 
 # EC2 인스턴스
-## DB 서버 전용 인스턴스
-## Amazon Linux 2023 AMI
-module "ec2_service_server_instance" {
+## 애플리케이션 전용 인스턴스
+module "ec2_application_instance" {
   source                 = "./instance"
-  ami                    = "ami-049788618f07e189d"
-  instance_name          = "service_server"
+  ami                    = "ami-079b804a369b200bb"
+  instance_name          = "MONTY_APPLICATION_INSTANCE"
   instance_type          = "t2.micro"
-  user_data              = templatefile("scripts/ec2_userdata.sh", { AWS_EC2_USERDATA_GHCR_TOKEN = var.AWS_EC2_USERDATA_GHCR_TOKEN })
+  user_data              = templatefile("scripts/ec2_application_instance_userdata.sh", { AWS_EC2_USERDATA_GHCR_TOKEN = var.AWS_EC2_USERDATA_GHCR_TOKEN })
+  profile_name           = var.iam_instance_profile_ec2_managed_ssm_name
+  vpc_security_group_ids = [module.security_group.ec2_security_group_ssh_info.id, module.security_group.ec2_security_group_web_info.id]
+  key_pair_name          = var.key_pair_name
+  depends_on             = [module.security_group]
+}
+
+##  데이터베이스 전용 인스턴스
+module "ec2_database_instance" {
+  source                 = "./instance"
+  ami                    = "ami-079b804a369b200bb"
+  instance_name          = "MONTY_DATABASE_INSTANCE"
+  instance_type          = "t2.micro"
+  user_data              = file("scripts/ec2_database_instance_userdata.sh")
   profile_name           = var.iam_instance_profile_ec2_managed_ssm_name
   vpc_security_group_ids = [module.security_group.ec2_security_group_ssh_info.id, module.security_group.ec2_security_group_web_info.id]
   key_pair_name          = var.key_pair_name

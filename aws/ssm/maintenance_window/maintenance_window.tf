@@ -29,7 +29,7 @@ module "ssm_maintenance_window_target" {
   source                          = "./target"
   ssm_maintenance_window_start_id = aws_ssm_maintenance_window.start_window.id
   ssm_maintenance_window_stop_id  = aws_ssm_maintenance_window.stop_window.id
-  ec2_instance_database_server_id = var.ec2_instance_database_server_id
+  ec2_instance_id                 = var.ec2_instance_id
   depends_on                      = [aws_ssm_maintenance_window.start_window, aws_ssm_maintenance_window.stop_window]
 }
 
@@ -40,9 +40,9 @@ module "ssm_maintenance_window_task" {
   ssm_maintenance_window_stop_id               = aws_ssm_maintenance_window.stop_window.id
   ssm_maintenance_window_target_start_id       = module.ssm_maintenance_window_target.aws_ssm_maintenance_window_target_start.id
   ssm_maintenance_window_target_stop_id        = module.ssm_maintenance_window_target.aws_ssm_maintenance_window_target_stop.id
-  ec2_instance_database_server_id              = var.ec2_instance_database_server_id
+  ec2_instance_id                              = var.ec2_instance_id
   iam_role_ssm_maintenance_task_manage_ec2_arn = var.iam_role_ssm_maintenance_task_manage_ec2_arn
-  depends_on                                   = [
+  depends_on = [
     aws_ssm_maintenance_window.start_window, aws_ssm_maintenance_window.stop_window,
     module.ssm_maintenance_window_target
   ]

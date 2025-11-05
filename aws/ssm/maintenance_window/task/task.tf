@@ -3,7 +3,7 @@
 */
 resource "aws_ssm_maintenance_window_task" "start_task" {
   window_id        = var.ssm_maintenance_window_start_id
-  task_arn         = "AWS-StartEC2Instance"    # AWS 기본 정의 Document 사용
+  task_arn         = "AWS-StartEC2Instance" # AWS 기본 정의 Document 사용
   task_type        = "AUTOMATION"
   priority         = 1
   max_concurrency  = "1"
@@ -21,7 +21,7 @@ resource "aws_ssm_maintenance_window_task" "start_task" {
 
       parameter {
         name   = "InstanceId"
-        values = [var.ec2_instance_database_server_id]
+        values = [var.ec2_instance_id]
       }
     }
   }
@@ -29,7 +29,7 @@ resource "aws_ssm_maintenance_window_task" "start_task" {
 
 resource "aws_ssm_maintenance_window_task" "stop_task" {
   window_id        = var.ssm_maintenance_window_stop_id
-  task_arn         = "AWS-StopEC2Instance"  # AWS 기본 정의 Document 사용ø
+  task_arn         = "AWS-StopEC2Instance" # AWS 기본 정의 Document 사용ø
   task_type        = "AUTOMATION"
   priority         = 1
   max_concurrency  = "1"
@@ -47,7 +47,7 @@ resource "aws_ssm_maintenance_window_task" "stop_task" {
 
       parameter {
         name   = "InstanceId"
-        values = [var.ec2_instance_database_server_id]
+        values = [var.ec2_instance_id]
       }
     }
   }
