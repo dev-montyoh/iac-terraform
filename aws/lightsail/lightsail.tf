@@ -3,7 +3,7 @@ resource "aws_lightsail_static_ip" "database_lightsail_static_ip" {
 }
 
 module "aws_lightsail_key_pair" {
-  source = "./key_pair"
+  source             = "./key_pair"
   AWS_SSH_PUBLIC_KEY = var.AWS_SSH_PUBLIC_KEY
 }
 
@@ -14,4 +14,9 @@ resource "aws_lightsail_instance" "db_instance" {
   key_pair_name     = module.aws_lightsail_key_pair.aws_lightsail_key.name
   availability_zone = "ap-northeast-2a"
   user_data         = file("scripts/lightsail_database_instance_userdata.sh")
+}
+
+resource "aws_lightsail_static_ip_attachment" "aws_lightsail_static_ip_attachment" {
+  instance_name  = aws_lightsail_instance.db_instance.name
+  static_ip_name = aws_lightsail_static_ip.database_lightsail_static_ip.name
 }
