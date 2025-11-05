@@ -8,19 +8,19 @@ module "aws_lightsail_key_pair" {
 }
 
 resource "aws_lightsail_instance" "db_instance" {
-  name              = "MONTY_DATABASE_INSTANCE"
+  name              = "MONTY_DB_INSTANCE"
   bundle_id         = "nano_3_0"
   blueprint_id      = "ubuntu_22_04"
   key_pair_name     = module.aws_lightsail_key_pair.aws_lightsail_key.name
   availability_zone = "ap-northeast-2a"
-  user_data         = file("scripts/lightsail_database_instance_userdata.sh")
-  depends_on = [module.aws_lightsail_key_pair]
+  user_data         = templatefile("scripts/lightsail_database_instance_userdata.sh", { DB_PASSWORD = var.DB_PASSWORD })
+  depends_on        = [module.aws_lightsail_key_pair]
 }
 
 resource "aws_lightsail_static_ip_attachment" "aws_lightsail_static_ip_attachment" {
   instance_name  = aws_lightsail_instance.db_instance.name
   static_ip_name = aws_lightsail_static_ip.database_lightsail_static_ip.name
-  depends_on = [aws_lightsail_static_ip.database_lightsail_static_ip, aws_lightsail_instance.db_instance]
+  depends_on     = [aws_lightsail_static_ip.database_lightsail_static_ip, aws_lightsail_instance.db_instance]
 }
 
 resource "aws_lightsail_instance_public_ports" "db_firewall" {

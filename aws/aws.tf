@@ -10,7 +10,7 @@ module "iam" {
 }
 
 module "key_pair" {
-  source                 = "./key_pair"
+  source             = "./key_pair"
   AWS_SSH_PUBLIC_KEY = var.AWS_SSH_PUBLIC_KEY
 }
 
@@ -31,8 +31,9 @@ module "elastic_ip" {
 }
 
 module "lightsail" {
-  source        = "./lightsail"
+  source             = "./lightsail"
   AWS_SSH_PUBLIC_KEY = var.AWS_SSH_PUBLIC_KEY
+  DB_PASSWORD        = var.DB_PASSWORD
 }
 
 # 생성된 ec2 에 대해서 자동 중지/시작 설정
