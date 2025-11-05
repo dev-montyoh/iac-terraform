@@ -14,11 +14,13 @@ resource "aws_lightsail_instance" "db_instance" {
   key_pair_name     = module.aws_lightsail_key_pair.aws_lightsail_key.name
   availability_zone = "ap-northeast-2a"
   user_data         = file("scripts/lightsail_database_instance_userdata.sh")
+  depends_on = [module.aws_lightsail_key_pair]
 }
 
 resource "aws_lightsail_static_ip_attachment" "aws_lightsail_static_ip_attachment" {
   instance_name  = aws_lightsail_instance.db_instance.name
   static_ip_name = aws_lightsail_static_ip.database_lightsail_static_ip.name
+  depends_on = [aws_lightsail_static_ip.database_lightsail_static_ip, aws_lightsail_instance.db_instance]
 }
 
 resource "aws_lightsail_instance_public_ports" "db_firewall" {
@@ -30,4 +32,6 @@ resource "aws_lightsail_instance_public_ports" "db_firewall" {
     to_port   = 5432
     cidrs     = ["0.0.0.0/0"]
   }
+
+  depends_on = [aws_lightsail_instance.db_instance]
 }
