@@ -1,5 +1,5 @@
 #!/bin/bash
-dnf update -y
+apt update
 
 # ----------------------
 # PostgreSQL 15 설치 및 설정

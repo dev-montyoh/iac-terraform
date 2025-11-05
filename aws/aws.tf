@@ -30,17 +30,15 @@ module "elastic_ip" {
   depends_on                     = [module.ec2]
 }
 
+module "lightsail" {
+  source        = "./lightsail"
+  key_pair_name = module.key_pair.aws_ec2_ssh_public_key.key_name
+}
+
 # 생성된 ec2 에 대해서 자동 중지/시작 설정
 module "ssm_application_instance" {
   source                                       = "./ssm"
   ec2_instance_id                              = module.ec2.ec2_application_instance_id
-  iam_role_ssm_maintenance_task_manage_ec2_arn = module.iam.iam_role_ssm_maintenance_task_manage_ec2_arn
-  depends_on                                   = [module.iam, module.ec2]
-}
-
-module "ssm_database_instance" {
-  source                                       = "./ssm"
-  ec2_instance_id                              = module.ec2.ec2_database_instance_id
   iam_role_ssm_maintenance_task_manage_ec2_arn = module.iam.iam_role_ssm_maintenance_task_manage_ec2_arn
   depends_on                                   = [module.iam, module.ec2]
 }
