@@ -13,7 +13,7 @@ module "security_group" {
 ## 애플리케이션 전용 인스턴스
 module "ec2_application_instance" {
   source                 = "./instance"
-  ami                    = "ami-079b804a369b200bb"
+  ami                    = "ami-049788618f07e189d"
   instance_name          = "MONTY_APPLICATION_INSTANCE"
   instance_type          = "t2.micro"
   user_data              = templatefile("scripts/ec2_application_instance_userdata.sh", { AWS_EC2_USERDATA_GHCR_TOKEN = var.AWS_EC2_USERDATA_GHCR_TOKEN })
