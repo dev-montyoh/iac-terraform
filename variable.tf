@@ -47,3 +47,4 @@ variable "CLOUDFLARE_API_TOKEN" { type = string }
 variable "CLOUDFLARE_ZONE_ID" { type = string }
 variable "CLOUDFLARE_ACCOUNT_ID" { type = string }
 variable "AWS_EC2_USERDATA_GHCR_TOKEN" { type = string }
+variable "DB_PASSWORD" { type = string }

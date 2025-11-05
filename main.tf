@@ -35,6 +35,7 @@ module "aws" {
   AWS_EC2_SSH_ALLOWED_IPS     = var.AWS_EC2_SSH_ALLOWED_IPS
   AWS_SSH_PUBLIC_KEY          = var.AWS_EC2_SSH_PUBLIC_KEY
   AWS_EC2_USERDATA_GHCR_TOKEN = var.AWS_EC2_USERDATA_GHCR_TOKEN
+  DB_PASSWORD                 = var.DB_PASSWORD
 }
 
 module "cloudflare" {

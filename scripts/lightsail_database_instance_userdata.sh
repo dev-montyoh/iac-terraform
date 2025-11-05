@@ -11,7 +11,7 @@ systemctl enable postgresql
 systemctl start postgresql
 
 # === Set PostgreSQL Password ===
-sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'your_password_here';"
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD '${DB_PASSWORD}';"
 
 # === Allow remote connections ===
 echo "listen_addresses = '*'" >> /etc/postgresql/*/main/postgresql.conf
