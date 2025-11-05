@@ -1,1 +1,1 @@
-variable "key_pair_name" { type = string }
+variable "AWS_SSH_PUBLIC_KEY" { type = string }

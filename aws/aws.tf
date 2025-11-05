@@ -11,7 +11,7 @@ module "iam" {
 
 module "key_pair" {
   source                 = "./key_pair"
-  AWS_EC2_SSH_PUBLIC_KEY = var.AWS_EC2_SSH_PUBLIC_KEY
+  AWS_SSH_PUBLIC_KEY = var.AWS_SSH_PUBLIC_KEY
 }
 
 module "ec2" {
@@ -32,8 +32,7 @@ module "elastic_ip" {
 
 module "lightsail" {
   source        = "./lightsail"
-  key_pair_name = module.key_pair.aws_ec2_ssh_public_key.key_name
-  depends_on    = [module.key_pair]
+  AWS_SSH_PUBLIC_KEY = var.AWS_SSH_PUBLIC_KEY
 }
 
 # 생성된 ec2 에 대해서 자동 중지/시작 설정
