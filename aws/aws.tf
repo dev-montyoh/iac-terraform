@@ -33,6 +33,7 @@ module "elastic_ip" {
 module "lightsail" {
   source        = "./lightsail"
   key_pair_name = module.key_pair.aws_ec2_ssh_public_key.key_name
+  depends_on    = [module.key_pair]
 }
 
 # 생성된 ec2 에 대해서 자동 중지/시작 설정
