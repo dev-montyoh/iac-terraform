@@ -28,6 +28,12 @@ resource "aws_lightsail_instance_public_ports" "db_firewall" {
 
   port_info {
     protocol  = "tcp"
+    from_port = 22
+    to_port   = 22
+  }
+
+  port_info {
+    protocol  = "tcp"
     from_port = 5432
     to_port   = 5432
     cidrs     = ["0.0.0.0/0"]
