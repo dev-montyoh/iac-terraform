@@ -5,7 +5,7 @@ resource "aws_ssm_maintenance_window_target" "start_target" {
   resource_type = "INSTANCE"
   targets {
     key    = "InstanceIds"
-    values = [var.ec2_instance_database_server_id]
+    values = [var.ec2_instance_id]
   }
 }
 
@@ -15,6 +15,6 @@ resource "aws_ssm_maintenance_window_target" "stop_target" {
   resource_type = "INSTANCE"
   targets {
     key    = "InstanceIds"
-    values = [var.ec2_instance_database_server_id]
+    values = [var.ec2_instance_id]
   }
 }
