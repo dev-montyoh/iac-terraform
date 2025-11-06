@@ -18,20 +18,24 @@ sudo -u postgres psql -c "ALTER USER postgres PASSWORD '${DB_PASSWORD}';"
 
 # 유저 생성
 sudo -u postgres psql <<EOSQL
--- 데이터베이스 생성
-CREATE DATABASE "backend-api-server"
-  WITH OWNER = ${DB_USERNAME}
-       ENCODING = 'UTF8'
-       LC_COLLATE = 'C.UTF-8'
-       LC_CTYPE = 'C.UTF-8'
-       TEMPLATE = template0
-  ;
-
--- 유저 생성 (조건부)
+-- 유저 생성 (존재하지 않으면)
 DO \$\$
 BEGIN
    IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${DB_USERNAME}') THEN
       CREATE ROLE ${DB_USERNAME} WITH LOGIN PASSWORD '${DB_PASSWORD}';
+   END IF;
+END
+\$\$;
+
+-- 데이터베이스 생성 (존재하지 않으면)
+DO \$\$
+BEGIN
+   IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'backend-api-server') THEN
+      CREATE DATABASE "backend-api-server" OWNER ${DB_USERNAME}
+        ENCODING 'UTF8'
+        LC_COLLATE 'C.UTF-8'
+        LC_CTYPE 'C.UTF-8'
+        TEMPLATE template0;
    END IF;
 END
 \$\$;
