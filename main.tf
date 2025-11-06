@@ -39,9 +39,10 @@ module "aws" {
 }
 
 module "cloudflare" {
-  source                   = "./cloudflare"
-  service_server_public_ip = module.aws.service_server_public_ip
-  depends_on               = [module.aws]
-  CLOUDFLARE_ZONE_ID       = var.CLOUDFLARE_ZONE_ID
-  CLOUDFLARE_ACCOUNT_ID    = var.CLOUDFLARE_ACCOUNT_ID
+  source                    = "./cloudflare"
+  service_server_public_ip  = module.aws.service_server_public_ip
+  database_server_public_ip = module.aws.database_server_public_ip
+  depends_on                = [module.aws]
+  CLOUDFLARE_ZONE_ID        = var.CLOUDFLARE_ZONE_ID
+  CLOUDFLARE_ACCOUNT_ID     = var.CLOUDFLARE_ACCOUNT_ID
 }
