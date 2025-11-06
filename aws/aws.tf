@@ -33,6 +33,7 @@ module "elastic_ip" {
 module "lightsail" {
   source             = "./lightsail"
   AWS_SSH_PUBLIC_KEY = var.AWS_SSH_PUBLIC_KEY
+  DB_USERNAME        = var.DB_USERNAME
   DB_PASSWORD        = var.DB_PASSWORD
 }
 
