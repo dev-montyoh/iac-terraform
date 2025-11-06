@@ -8,7 +8,7 @@ module "aws_lightsail_key_pair" {
 }
 
 resource "aws_lightsail_instance" "db_instance" {
-  name              = "MONTY_DATABASE_INSTANCE"
+  name              = "MONTY_DB_INSTANCE"
   bundle_id         = "nano_3_0"
   blueprint_id      = "ubuntu_22_04"
   key_pair_name     = module.aws_lightsail_key_pair.aws_lightsail_key.name
@@ -17,7 +17,7 @@ resource "aws_lightsail_instance" "db_instance" {
     {
       DB_USERNAME = var.DB_USERNAME
       DB_PASSWORD = var.DB_PASSWORD
-      PG_VERSION  = 14
+      PG_VERSION = 14
     }
   )
   depends_on = [module.aws_lightsail_key_pair]
