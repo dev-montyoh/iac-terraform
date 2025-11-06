@@ -29,6 +29,17 @@ resource "cloudflare_dns_record" "dev_monty_ssh" {
   proxied = false
 }
 
+##  서브 도메인 - SSH 접속 (Database)
+resource "cloudflare_dns_record" "dev_monty_ssh_database" {
+  zone_id = var.CLOUDFLARE_ZONE_ID
+  name    = "ssh.db.dev-monty.me"
+  ttl     = 1
+  type    = "A"
+  comment = "ssh.db.dev-monty.me"
+  content = var.database_server_public_ip
+  proxied = false
+}
+
 # R2 버킷
 resource "cloudflare_r2_bucket" "cloudflare-bucket" {
   account_id = var.CLOUDFLARE_ACCOUNT_ID
