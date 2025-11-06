@@ -1,24 +1,35 @@
 #!/bin/bash
-# === System Update ===
+# 이 스크립트는 apt 패키지 관리자를 사용하는 Ubuntu/Debian 기반 시스템용입니다.
+
+# 환경 변수가 외부에서 설정되지 않았다면, 여기에 기본값을 설정해야 합니다.
+# export DB_USERNAME="your_app_user"
+# export DB_PASSWORD="your_secure_password"
+
+# === 시스템 업데이트 ===
 apt-get update -y
 apt-get upgrade -y
 
-# === Install PostgreSQL ===
+# === PostgreSQL 설치 ===
 apt-get install -y postgresql postgresql-contrib
 
-# === Enable and Start PostgreSQL ===
+# === PostgreSQL 서비스 활성화 및 시작 ===
 systemctl enable postgresql
 systemctl start postgresql
 
-# Postgresql 이 준비 될 때까지 대기
+# PostgreSQL 이 준비될 때까지 대기
 sudo -u postgres bash -c "until psql -c '\q' 2>/dev/null; do sleep 1; done"
 
-# === 슈퍼유저 비밀번호 설정 ===
+# === PostgreSQL 버전 동적 확인 및 설정 경로 지정 ===
+# 설치된 버전을 확인하여 PG_VERSION 설정
+PG_CONF="/etc/postgresql/${PG_VERSION}/main/postgresql.conf"
+PG_HBA="/etc/postgresql/${PG_VERSION}/main/pg_hba.conf"
+DB_NAME="backend-api-server"
+
+# === 1. 슈퍼유저 비밀번호 설정 ===
 sudo -u postgres psql -c "ALTER USER postgres PASSWORD '${DB_PASSWORD}';"
 
-# 유저 생성
-sudo -u postgres psql <<EOSQL
--- 유저 생성 (존재하지 않으면)
+# === 2. 애플리케이션 유저 생성 (존재하지 않으면) ===
+sudo -u postgres psql <<EOSQL_USER
 DO \$\$
 BEGIN
    IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${DB_USERNAME}') THEN
@@ -26,33 +37,23 @@ BEGIN
    END IF;
 END
 \$\$;
+EOSQL_USER
 
--- 데이터베이스 생성 (존재하지 않으면)
-DO \$\$
-BEGIN
-   IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'backend-api-server') THEN
-      CREATE DATABASE "backend-api-server" OWNER ${DB_USERNAME}
-        ENCODING 'UTF8'
-        LC_COLLATE 'C.UTF-8'
-        LC_CTYPE 'C.UTF-8'
-        TEMPLATE template0;
-   END IF;
-END
-\$\$;
+# === 3. 데이터베이스 생성 (Bash 조건문 사용: CREATE DATABASE는 DO 블록에서 실행 불가) ===
+db_exists() {
+    sudo -u postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'" | grep -q 1
+}
 
--- 권한 부여
-GRANT ALL PRIVILEGES ON DATABASE "backend-api-server" TO ${DB_USERNAME};
-EOSQL
+if ! db_exists; then
+    sudo -u postgres psql -c "CREATE DATABASE \"${DB_NAME}\" OWNER ${DB_USERNAME} ENCODING 'UTF8' LC_COLLATE 'C.UTF-8' LC_CTYPE 'C.UTF-8' TEMPLATE template0;"
+    # 데이터베이스 생성 후 권한 부여
+    sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE \"${DB_NAME}\" TO ${DB_USERNAME};"
+fi
 
-# 자동으로 설치된 버전 경로를 사용
-PG_CONF="/etc/postgresql/${PG_VERSION}/main/postgresql.conf"
-PG_HBA="/etc/postgresql/${PG_VERSION}/main/pg_hba.conf"
-
-# 안전하게 listen_addresses 설정 (주석 라인 교체 혹은 추가)
+# === 4. postgresql.conf 수정: 외부 접속 허용 (listen_addresses = '*') ===
 if grep -q "^#listen_addresses" "$PG_CONF" 2>/dev/null; then
   sed -i "s/^#listen_addresses.*/listen_addresses = '*'/" "$PG_CONF"
 else
-  # 이미 값이 있으면 대체, 없으면 추가
   if grep -q "^listen_addresses" "$PG_CONF" 2>/dev/null; then
     sed -i "s/^listen_addresses.*/listen_addresses = '*'/" "$PG_CONF"
   else
@@ -60,16 +61,12 @@ else
   fi
 fi
 
-# pg_hba: 애플리케이션 유저만 허용 (더 안전)
-# 여기가 핵심: 전체 허용 대신 특정 유저/특정 CIDR을 권장합니다.
-# 예시: APP_USER 에 대해 전체 IPv4에서 md5 인증 허용 (테스트용)
-echo "host    backend-api-server    ${DB_USERNAME}    0.0.0.0/0    md5" >> "$PG_HBA"
+# === 5. pg_hba.conf 수정: 애플리케이션 유저에 대해 접속 허용 ===
+# host 타입, DB 이름, 유저 이름, 허용할 IP 대역 (0.0.0.0/0은 전체 허용), 인증 방식 (md5)
+echo "host    ${DB_NAME}    ${DB_USERNAME}    0.0.0.0/0    md5" >> "$PG_HBA"
 
-# (원한다면 모든 DB/모든 유저를 허용하려면 다음 줄을 추가)
-# echo "host    all    all    0.0.0.0/0    md5" >> "$PG_HBA"
-
-# --- 9. PostgreSQL 재시작 ---
+# === 6. PostgreSQL 재시작 (설정 적용) ===
 systemctl restart postgresql
 
-# --- 10. 최종 확인 메시지 (로그에 남김) ---
-echo "Postgres setup complete. DB=backend-api-server, USER=${DB_USERNAME}"
+# === 7. 최종 확인 메시지 ===
+echo "Postgres setup complete. DB=${DB_NAME}, USER=${DB_USERNAME}"
