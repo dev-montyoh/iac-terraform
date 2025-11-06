@@ -18,14 +18,16 @@ sudo -u postgres psql -c "ALTER USER postgres PASSWORD '${DB_PASSWORD}';"
 
 # 유저 생성
 sudo -u postgres psql <<EOSQL
-DO \$\$
-BEGIN
-   IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'backend-api-server') THEN
-      EXECUTE format('CREATE DATABASE %I;', 'backend-api-server');
-   END IF;
-END
-\$\$;
+-- 데이터베이스 생성
+CREATE DATABASE "backend-api-server"
+  WITH OWNER = ${DB_USERNAME}
+       ENCODING = 'UTF8'
+       LC_COLLATE = 'C.UTF-8'
+       LC_CTYPE = 'C.UTF-8'
+       TEMPLATE = template0
+  ;
 
+-- 유저 생성 (조건부)
 DO \$\$
 BEGIN
    IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${DB_USERNAME}') THEN
@@ -34,7 +36,8 @@ BEGIN
 END
 \$\$;
 
-GRANT ALL PRIVILEGES ON DATABASE backend-api-server TO ${DB_USERNAME};
+-- 권한 부여
+GRANT ALL PRIVILEGES ON DATABASE "backend-api-server" TO ${DB_USERNAME};
 EOSQL
 
 # 자동으로 설치된 버전 경로를 사용
