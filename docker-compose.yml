@@ -51,6 +51,15 @@ services:
       backend-network:
     restart: always
 
+  frontend-payment:
+    image: ghcr.io/dev-montyoh/frontend-payment:latest
+    container_name: frontend-payment
+    ports:
+      - "8081:8081"
+    networks:
+      backend-network:
+    restart: always
+
 networks:
   backend-network:
     driver: bridge
