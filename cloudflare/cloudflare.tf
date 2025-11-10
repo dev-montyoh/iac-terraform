@@ -40,10 +40,13 @@ resource "cloudflare_dns_record" "dev_monty_ssh_database" {
   proxied = false
 }
 
-# R2 버킷
-# resource "cloudflare_r2_bucket" "cloudflare-bucket" {
-#   account_id = var.CLOUDFLARE_ACCOUNT_ID
-#   name       = "backend-api-database-bucket"
-#   location   = "APAC"
-#   lifecycle { prevent_destroy = true }
-# }
+##  서브 도메인 - Frontend Payment
+resource "cloudflare_dns_record" "dev_monty_web_payment" {
+  zone_id = var.CLOUDFLARE_ZONE_ID
+  name    = "payment.dev-monty.me"
+  ttl     = 1
+  type    = "A"
+  comment = "payment.dev-monty.me record"
+  content = var.service_server_public_ip
+  proxied = false
+}
