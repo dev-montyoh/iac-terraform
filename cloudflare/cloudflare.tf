@@ -48,5 +48,5 @@ resource "cloudflare_dns_record" "dev_monty_web_payment" {
   type    = "A"
   comment = "payment.dev-monty.me record"
   content = var.service_server_public_ip
-  proxied = false
+  proxied = true
 }
