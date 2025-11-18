@@ -50,3 +50,11 @@ resource "cloudflare_dns_record" "dev_monty_web_payment" {
   content = var.service_server_public_ip
   proxied = true
 }
+
+##  R2 버킷 생성
+### Content 
+module "r2" {
+  source                = "./r2"
+  CLOUDFLARE_ACCOUNT_ID = var.CLOUDFLARE_ACCOUNT_ID
+  bucket_name           = "content"
+}
