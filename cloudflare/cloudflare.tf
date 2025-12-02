@@ -52,15 +52,15 @@ resource "cloudflare_dns_record" "dev_monty_web_payment" {
 }
 
 ##  서브 도메인 - R2 버킷 접근 도메인
-resource "cloudflare_dns_record" "dev_monty_cdn" {
-  zone_id = var.CLOUDFLARE_ZONE_ID
-  name    = "cdn.dev-monty.me"
-  type    = "CNAME"
-  comment = "cdn.dev-monty.me record"
-  content = "r2.cloudflarestorage.com"
-  ttl     = 1
-  proxied = true
-}
+# resource "cloudflare_dns_record" "dev_monty_cdn" {
+#   zone_id = var.CLOUDFLARE_ZONE_ID
+#   name    = "cdn.dev-monty.me"
+#   type    = "CNAME"
+#   comment = "cdn.dev-monty.me record"
+#   content = "r2.cloudflarestorage.com"
+#   ttl     = 1
+#   proxied = true
+# }
 
 ##  R2 버킷 생성
 ### Content 
