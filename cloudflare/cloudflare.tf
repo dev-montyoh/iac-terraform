@@ -71,11 +71,11 @@ module "r2" {
 }
 
 ##  서브도메인 - Content R2 버킷 연결
-resource "cloudflare_r2_custom_domain" "dev_monty_cdn_r2" {
-  account_id  = var.CLOUDFLARE_ACCOUNT_ID
-  bucket_name = module.r2.bucket_name
-  domain      = cloudflare_dns_record.dev_monty_cdn.name
-  enabled     = true
-  zone_id     = var.CLOUDFLARE_ZONE_ID
-  depends_on = [module.r2, cloudflare_dns_record.dev_monty_cdn]
-}
+# resource "cloudflare_r2_custom_domain" "dev_monty_cdn_r2" {
+#   account_id  = var.CLOUDFLARE_ACCOUNT_ID
+#   bucket_name = module.r2.bucket_name
+#   domain      = cloudflare_dns_record.dev_monty_cdn.name
+#   enabled     = true
+#   zone_id     = var.CLOUDFLARE_ZONE_ID
+#   depends_on = [module.r2, cloudflare_dns_record.dev_monty_cdn]
+# }
