@@ -1,3 +1,4 @@
+# 데이터베이스 Lightsail 인스턴스
 resource "aws_lightsail_static_ip" "database_lightsail_static_ip" {
   name = "database_lightsail_static_ip"
 }
@@ -43,6 +44,12 @@ resource "aws_lightsail_instance_public_ports" "db_firewall" {
     from_port = 5432
     to_port   = 5432
     cidrs     = ["0.0.0.0/0"]
+  }
+
+  lifecycle {
+    ignore_changes = [
+      port_info
+    ]
   }
 
   depends_on = [aws_lightsail_instance.db_instance]

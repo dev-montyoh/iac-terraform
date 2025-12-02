@@ -23,6 +23,23 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 
+  # content
+  backend-api-server-content:
+    image: ghcr.io/dev-montyoh/backend-api-server-content:latest
+    container_name: backend-api-server-content
+    ports:
+      - "3002:3002"
+    networks:
+      backend-network:
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID}
+      CLOUDFLARE_ACCESS_KEY: ${CLOUDFLARE_ACCESS_KEY}
+      CLOUDFLARE_SECRET_KEY: ${CLOUDFLARE_SECRET_KEY}
+      CLOUDFLARE_R2_END_POINT: ${CLOUDFLARE_R2_END_POINT}
+      CLOUDFLARE_R2_BUCKET_NAME: ${CLOUDFLARE_R2_BUCKET_NAME}
+
   # payment
   backend-api-server-payment:
     image: ghcr.io/dev-montyoh/backend-api-server-payment:latest
