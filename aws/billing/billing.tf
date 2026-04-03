@@ -7,7 +7,7 @@
 module "budgets_budget_85_actual" {
   source                = "./budget"
   name                  = "budgets_budget_85_actual"
-  limit_amount          = "5"
+  limit_amount          = "20"
   notification_type     = "ACTUAL"
   threshold             = 85
   BUDGETS_ALARM_TARGETS = var.BUDGETS_ALARM_TARGETS
@@ -17,7 +17,7 @@ module "budgets_budget_85_actual" {
 module "budgets_budget_100_actual" {
   source                = "./budget"
   name                  = "budgets_budget_100_actual"
-  limit_amount          = "5"
+  limit_amount          = "20"
   notification_type     = "ACTUAL"
   threshold             = 100
   BUDGETS_ALARM_TARGETS = var.BUDGETS_ALARM_TARGETS
@@ -27,7 +27,7 @@ module "budgets_budget_100_actual" {
 module "budgets_budget_100_forecasted" {
   source                = "./budget"
   name                  = "budgets_budget_100_forecasted"
-  limit_amount          = "5"
+  limit_amount          = "20"
   notification_type     = "FORECASTED"
   threshold             = 100
   BUDGETS_ALARM_TARGETS = var.BUDGETS_ALARM_TARGETS
