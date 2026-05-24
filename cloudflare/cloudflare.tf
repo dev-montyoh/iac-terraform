@@ -112,6 +112,7 @@ resource "cloudflare_r2_custom_domain" "montyoh_dev_cdn_r2" {
   account_id  = var.CLOUDFLARE_ACCOUNT_ID
   bucket_name = module.r2.bucket_name
   domain      = "cdn.montyoh.dev"
+  enabled     = true
   zone_id     = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
   depends_on  = [module.r2]
 }
@@ -129,6 +130,7 @@ resource "cloudflare_r2_custom_domain" "dev_monty_cdn_r2" {
   account_id  = var.CLOUDFLARE_ACCOUNT_ID
   bucket_name = module.r2.bucket_name
   domain      = "cdn.dev-monty.me"
+  enabled     = true
   zone_id     = var.CLOUDFLARE_ZONE_ID
   depends_on  = [module.r2]
 }
