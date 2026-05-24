@@ -1,4 +1,5 @@
 variable "service_server_public_ip" { type = string }
 variable "database_server_public_ip" { type = string }
 variable "CLOUDFLARE_ZONE_ID" { type = string }
+variable "CLOUDFLARE_ZONE_ID_MONTYOH_DEV" { type = string }
 variable "CLOUDFLARE_ACCOUNT_ID" { type = string }
