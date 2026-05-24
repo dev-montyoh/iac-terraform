@@ -107,30 +107,3 @@ resource "cloudflare_dns_record" "montyoh_dev_payment" {
   proxied = true
 }
 
-##  서브도메인 - Content R2 버킷 연결 (montyoh.dev)
-resource "cloudflare_r2_custom_domain" "montyoh_dev_cdn_r2" {
-  account_id  = var.CLOUDFLARE_ACCOUNT_ID
-  bucket_name = module.r2.bucket_name
-  domain      = "cdn.montyoh.dev"
-  enabled     = true
-  zone_id     = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  depends_on  = [module.r2]
-}
-
-##  R2 버킷 생성
-### Content 
-module "r2" {
-  source                = "./r2"
-  CLOUDFLARE_ACCOUNT_ID = var.CLOUDFLARE_ACCOUNT_ID
-  bucket_name           = "content"
-}
-
-##  서브도메인 - Content R2 버킷 연결
-resource "cloudflare_r2_custom_domain" "dev_monty_cdn_r2" {
-  account_id  = var.CLOUDFLARE_ACCOUNT_ID
-  bucket_name = module.r2.bucket_name
-  domain      = "cdn.dev-monty.me"
-  enabled     = true
-  zone_id     = var.CLOUDFLARE_ZONE_ID
-  depends_on  = [module.r2]
-}
