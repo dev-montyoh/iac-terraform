@@ -30,9 +30,7 @@ module "aws" {
   policies_aws                = var.policies_aws
   policies_custom             = var.policies_custom
   users                       = var.users
-  VPC_ID                      = var.VPC_ID
   BUDGETS_ALARM_TARGETS       = var.BUDGETS_ALARM_TARGETS
-  AWS_EC2_SSH_ALLOWED_IPS     = var.AWS_EC2_SSH_ALLOWED_IPS
   AWS_SSH_PUBLIC_KEY          = var.AWS_EC2_SSH_PUBLIC_KEY
   AWS_EC2_USERDATA_GHCR_TOKEN = var.AWS_EC2_USERDATA_GHCR_TOKEN
   DB_USERNAME                 = var.DB_USERNAME
@@ -40,10 +38,11 @@ module "aws" {
 }
 
 module "cloudflare" {
-  source                    = "./cloudflare"
-  service_server_public_ip  = module.aws.service_server_public_ip
-  database_server_public_ip = module.aws.database_server_public_ip
-  depends_on                = [module.aws]
-  CLOUDFLARE_ZONE_ID        = var.CLOUDFLARE_ZONE_ID
-  CLOUDFLARE_ACCOUNT_ID     = var.CLOUDFLARE_ACCOUNT_ID
+  source                         = "./cloudflare"
+  service_server_public_ip       = module.aws.service_server_public_ip
+  database_server_public_ip      = module.aws.database_server_public_ip
+  depends_on                     = [module.aws]
+  CLOUDFLARE_ZONE_ID             = var.CLOUDFLARE_ZONE_ID
+  CLOUDFLARE_ZONE_ID_MONTYOH_DEV = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
+  CLOUDFLARE_ACCOUNT_ID          = var.CLOUDFLARE_ACCOUNT_ID
 }
