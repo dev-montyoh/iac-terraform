@@ -28,6 +28,7 @@ resource "aws_lightsail_instance_public_ports" "application_firewall" {
     protocol  = "tcp"
     from_port = 22
     to_port   = 22
+    cidrs     = ["0.0.0.0/0"]
   }
 
   port_info {
@@ -42,6 +43,10 @@ resource "aws_lightsail_instance_public_ports" "application_firewall" {
     from_port = 443
     to_port   = 443
     cidrs     = ["0.0.0.0/0"]
+  }
+
+  lifecycle {
+    ignore_changes = [port_info]
   }
 
   depends_on = [aws_lightsail_instance.application_instance]
