@@ -39,8 +39,7 @@
 ## Git 브랜치 전략
 
 - **`master`**: 최종 릴리즈 브랜치 (운영 환경)
-- **`develop`**: 통합 개발 브랜치
-- **`feature/*`**: 기능 개발 브랜치. `develop` 브랜치에서 분기 후 Pull Request를 통해 Merge합니다.
+- **`feature/*`**: 기능 개발 브랜치. `master` 브랜치에서 분기 후 Pull Request를 통해 Merge합니다.
 
 ## 커밋 메시지 규칙
 
