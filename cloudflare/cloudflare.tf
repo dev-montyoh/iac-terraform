@@ -107,3 +107,17 @@ resource "cloudflare_dns_record" "montyoh_dev_payment" {
   proxied = true
 }
 
+# Workers - 서버 다운 시 공사중 페이지
+resource "cloudflare_workers_script" "maintenance" {
+  account_id  = var.CLOUDFLARE_ACCOUNT_ID
+  script_name = "maintenance"
+  content     = templatefile("${path.module}/workers/maintenance.js", {
+    maintenance_html = file("${path.module}/workers/maintenance.html")
+  })
+}
+
+resource "cloudflare_workers_route" "montyoh_dev_maintenance" {
+  zone_id     = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
+  pattern     = "*montyoh.dev/*"
+  script      = cloudflare_workers_script.maintenance.script_name
+}
