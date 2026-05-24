@@ -41,3 +41,31 @@
 - **`master`**: 최종 릴리즈 브랜치 (운영 환경)
 - **`develop`**: 통합 개발 브랜치
 - **`feature/*`**: 기능 개발 브랜치. `develop` 브랜치에서 분기 후 Pull Request를 통해 Merge합니다.
+
+## 커밋 메시지 규칙
+
+[Conventional Commits](https://www.conventionalcommits.org/) 규칙을 따릅니다.
+
+```
+<type>: <subject>
+```
+
+### Type
+
+| type | 설명 |
+|---|---|
+| `feat` | 새로운 리소스 또는 기능 추가 |
+| `fix` | 오류 수정 |
+| `refactor` | 기능 변경 없이 코드 구조 개선 |
+| `chore` | 변수 정리, 파일 이동 등 유지보수 |
+| `docs` | README, CONTRIBUTING 등 문서 수정 |
+
+### 예시
+
+```
+feat: Cloudflare R2 버킷 추가
+fix: Lightsail 방화벽 포트 설정 오류 수정
+refactor: EC2 모듈을 Lightsail로 전환
+chore: 미사용 변수 VPC_ID 제거
+docs: README 프로젝트 구조 업데이트
+```
