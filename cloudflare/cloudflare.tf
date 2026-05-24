@@ -119,5 +119,5 @@ resource "cloudflare_workers_script" "maintenance" {
 resource "cloudflare_workers_route" "montyoh_dev_maintenance" {
   zone_id     = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
   pattern     = "*montyoh.dev/*"
-  script_name = cloudflare_workers_script.maintenance.script_name
+  script      = cloudflare_workers_script.maintenance.script_name
 }
