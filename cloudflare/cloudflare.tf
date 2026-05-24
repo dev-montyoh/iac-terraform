@@ -51,17 +51,6 @@ resource "cloudflare_dns_record" "dev_monty_web_payment" {
   proxied = true
 }
 
-##  서브 도메인 - R2 버킷 접근 도메인
-resource "cloudflare_dns_record" "dev_monty_cdn" {
-  zone_id = var.CLOUDFLARE_ZONE_ID
-  name    = "cdn.dev-monty.me"
-  type    = "CNAME"
-  comment = "cdn.dev-monty.me record"
-  content = "r2.cloudflarestorage.com"
-  ttl     = 1
-  proxied = true
-}
-
 # montyoh.dev 도메인 설정
 ##  루트 도메인 - 웹 접속
 resource "cloudflare_dns_record" "montyoh_dev_root" {
@@ -118,25 +107,14 @@ resource "cloudflare_dns_record" "montyoh_dev_payment" {
   proxied = true
 }
 
-##  서브 도메인 - R2 버킷 접근 도메인
-resource "cloudflare_dns_record" "montyoh_dev_cdn" {
-  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  name    = "cdn.montyoh.dev"
-  type    = "CNAME"
-  comment = "cdn.montyoh.dev record"
-  content = "r2.cloudflarestorage.com"
-  ttl     = 1
-  proxied = true
-}
-
 ##  서브도메인 - Content R2 버킷 연결 (montyoh.dev)
 resource "cloudflare_r2_custom_domain" "montyoh_dev_cdn_r2" {
   account_id  = var.CLOUDFLARE_ACCOUNT_ID
   bucket_name = module.r2.bucket_name
-  domain      = cloudflare_dns_record.montyoh_dev_cdn.name
+  domain      = "cdn.montyoh.dev"
   enabled     = true
   zone_id     = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  depends_on  = [module.r2, cloudflare_dns_record.montyoh_dev_cdn]
+  depends_on  = [module.r2]
 }
 
 ##  R2 버킷 생성
@@ -151,8 +129,8 @@ module "r2" {
 resource "cloudflare_r2_custom_domain" "dev_monty_cdn_r2" {
   account_id  = var.CLOUDFLARE_ACCOUNT_ID
   bucket_name = module.r2.bucket_name
-  domain      = cloudflare_dns_record.dev_monty_cdn.name
+  domain      = "cdn.dev-monty.me"
   enabled     = true
   zone_id     = var.CLOUDFLARE_ZONE_ID
-  depends_on  = [module.r2, cloudflare_dns_record.dev_monty_cdn]
+  depends_on  = [module.r2]
 }
