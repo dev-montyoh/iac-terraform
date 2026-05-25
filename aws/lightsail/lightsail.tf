@@ -51,9 +51,8 @@ resource "aws_lightsail_instance_public_ports" "application_firewall" {
   }
 
   lifecycle {
-    ignore_changes = [
-      port_info
-    ]
+    ignore_changes       = [port_info]
+    replace_triggered_by = [aws_lightsail_instance.application_instance]
   }
 
   depends_on = [aws_lightsail_instance.application_instance]
@@ -112,9 +111,8 @@ resource "aws_lightsail_instance_public_ports" "db_firewall" {
   }
 
   lifecycle {
-    ignore_changes = [
-      port_info
-    ]
+    ignore_changes       = [port_info]
+    replace_triggered_by = [aws_lightsail_instance.db_instance]
   }
 
   depends_on = [aws_lightsail_instance.db_instance]
