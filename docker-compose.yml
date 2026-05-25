@@ -60,6 +60,21 @@ services:
       PAYMENT_NICEPAY_MERCHANT_KEY: ${PAYMENT_NICEPAY_MERCHANT_KEY}
       PAYMENT_NICEPAY_MID: ${PAYMENT_NICEPAY_MID}
 
+  # xcelerate 데모
+  xcelerate-demo:
+    image: ghcr.io/dev-montyoh/xcelerate-demo:latest
+    container_name: xcelerate-demo
+    ports:
+      - "8082:8080"
+    networks:
+      backend-network:
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      XCELERATE_DB_URL: ${XCELERATE_DB_URL}
+      XCELERATE_DB_USERNAME: ${XCELERATE_DB_USERNAME}
+      XCELERATE_DB_PASSWORD: ${XCELERATE_DB_PASSWORD}
+
   # 프론트
   frontend-portfolio:
     image: ghcr.io/dev-montyoh/frontend-portfolio:latest
