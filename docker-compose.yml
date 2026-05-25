@@ -71,9 +71,9 @@ services:
     restart: always
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      XCELERATE_DB_URL: ${XCELERATE_DB_URL}
-      XCELERATE_DB_USERNAME: ${XCELERATE_DB_USERNAME}
-      XCELERATE_DB_PASSWORD: ${XCELERATE_DB_PASSWORD}
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
 
   # 프론트
   frontend-portfolio:
