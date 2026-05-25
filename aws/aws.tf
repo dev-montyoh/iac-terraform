@@ -10,11 +10,10 @@ module "iam" {
 }
 
 module "lightsail" {
-  source                      = "./lightsail"
-  AWS_SSH_PUBLIC_KEY          = var.AWS_SSH_PUBLIC_KEY
-  DB_USERNAME                 = var.DB_USERNAME
-  DB_PASSWORD                 = var.DB_PASSWORD
-  AWS_EC2_USERDATA_GHCR_TOKEN = var.AWS_EC2_USERDATA_GHCR_TOKEN
+  source             = "./lightsail"
+  AWS_SSH_PUBLIC_KEY = var.AWS_SSH_PUBLIC_KEY
+  DB_USERNAME        = var.DB_USERNAME
+  DB_PASSWORD        = var.DB_PASSWORD
 }
 
 module "billing" {
