@@ -1,0 +1,25 @@
+name: Redeploy All Services
+
+on:
+  workflow_dispatch:
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - repo: dev-montyoh/backend-api-server
+            workflow: manual-redeploy.yaml
+          - repo: dev-montyoh/backend-proxy-server
+            workflow: manual-redeploy.yml
+          - repo: dev-montyoh/portfolio
+            workflow: manual-redeploy.yml
+          - repo: dev-montyoh/xcelerate-demo
+            workflow: manual-redeploy.yml
+
+    steps:
+      - name: Trigger ${{ matrix.repo }}
+        run: gh workflow run ${{ matrix.workflow }} --repo ${{ matrix.repo }}
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_DISPATCH_TOKEN }}
