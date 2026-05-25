@@ -71,7 +71,7 @@ module "aws_lightsail_key_pair" {
 
 resource "aws_lightsail_instance" "db_instance" {
   name              = "MONTY_DATABASE_INSTANCE"
-  bundle_id         = "micro_3_0"
+  bundle_id         = "nano_3_0"
   blueprint_id      = "ubuntu_22_04"
   key_pair_name     = module.aws_lightsail_key_pair.aws_lightsail_key.name
   availability_zone = "ap-northeast-2a"
