@@ -48,13 +48,3 @@ variable "CLOUDFLARE_ACCOUNT_ID" { type = string }
 variable "AWS_EC2_USERDATA_GHCR_TOKEN" { type = string }
 variable "DB_PASSWORD" { type = string }
 variable "DB_USERNAME" { type = string }
-
-# OCI
-variable "OCI_TENANCY_OCID"  { type = string }
-variable "OCI_USER_OCID"     { type = string }
-variable "OCI_FINGERPRINT"   { type = string }
-variable "OCI_REGION"        { type = string }
-variable "OCI_PRIVATE_KEY" {
-  type      = string
-  sensitive = true
-}
