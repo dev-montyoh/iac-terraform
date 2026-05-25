@@ -21,6 +21,10 @@ resource "aws_lightsail_static_ip_attachment" "application_lightsail_static_ip_a
   instance_name  = aws_lightsail_instance.application_instance.name
   static_ip_name = aws_lightsail_static_ip.application_lightsail_static_ip.name
   depends_on     = [aws_lightsail_static_ip.application_lightsail_static_ip, aws_lightsail_instance.application_instance]
+
+  lifecycle {
+    replace_triggered_by = [aws_lightsail_instance.application_instance]
+  }
 }
 
 resource "aws_lightsail_instance_public_ports" "application_firewall" {
