@@ -45,8 +45,10 @@ module "aws" {
 
 provider "oci" {
   tenancy_ocid = var.OCI_TENANCY_OCID
-  auth         = "InstancePrincipal"
-  region       = "ap-chuncheon-1"
+  user_ocid    = var.OCI_USER_OCID
+  fingerprint  = var.OCI_FINGERPRINT
+  private_key  = var.OCI_PRIVATE_KEY
+  region       = var.OCI_REGION
 }
 
 module "oci" {
