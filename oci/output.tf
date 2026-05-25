@@ -1,3 +1,7 @@
-output "service_server_public_ip" {
-  value = module.application_instance.public_ip
+output "mysql_endpoint" {
+  value = module.mysql.endpoint
+}
+
+output "mysql_port" {
+  value = module.mysql.port
 }
