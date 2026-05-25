@@ -85,6 +85,10 @@ resource "aws_lightsail_static_ip_attachment" "aws_lightsail_static_ip_attachmen
   instance_name  = aws_lightsail_instance.db_instance.name
   static_ip_name = aws_lightsail_static_ip.database_lightsail_static_ip.name
   depends_on     = [aws_lightsail_static_ip.database_lightsail_static_ip, aws_lightsail_instance.db_instance]
+
+  lifecycle {
+    replace_triggered_by = [aws_lightsail_instance.db_instance]
+  }
 }
 
 resource "aws_lightsail_instance_public_ports" "db_firewall" {
