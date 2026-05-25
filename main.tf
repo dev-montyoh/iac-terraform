@@ -9,6 +9,11 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "5.11.0"
     }
+    # Oracle Cloud Infrastructure
+    oci = {
+      source  = "oracle/oci"
+      version = "~> 6.0"
+    }
   }
 }
 
@@ -36,6 +41,19 @@ module "aws" {
   AWS_EC2_USERDATA_GHCR_TOKEN = var.AWS_EC2_USERDATA_GHCR_TOKEN
   DB_USERNAME                 = var.DB_USERNAME
   DB_PASSWORD                 = var.DB_PASSWORD
+}
+
+provider "oci" {
+  tenancy_ocid = var.OCI_TENANCY_OCID
+  auth         = "InstancePrincipal"
+  region       = "ap-chuncheon-1"
+}
+
+module "oci" {
+  source                  = "./oci"
+  OCI_TENANCY_OCID        = var.OCI_TENANCY_OCID
+  OCI_SSH_PUBLIC_KEY      = var.OCI_SSH_PUBLIC_KEY
+  OCI_USERDATA_GHCR_TOKEN = var.OCI_USERDATA_GHCR_TOKEN
 }
 
 module "cloudflare" {
