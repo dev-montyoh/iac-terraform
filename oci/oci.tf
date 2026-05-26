@@ -12,10 +12,9 @@ module "networking" {
   ingress_ports  = [22, 80, 443, 5432]
 }
 
-# 애플리케이션 인스턴스
-# 용량 부족 시 Terraform Cloud 변수 변경 후 재apply:
-#   OCI_APP_OCPUS=2, OCI_APP_MEMORY_GBS=12  →  실패하면
-#   OCI_APP_OCPUS=1, OCI_APP_MEMORY_GBS=6   →  재시도
+# 애플리케이션 인스턴스 (2 OCPU / 12GB)
+# 둘 다 성공하면 이 인스턴스 사용, 코드에서 small 제거
+# 이 인스턴스만 실패하면 small이 살아있으므로 이 블록만 제거 후 재apply
 module "application_instance" {
   source         = "./instance"
   compartment_id = var.OCI_TENANCY_OCID
@@ -25,8 +24,24 @@ module "application_instance" {
   user_data      = templatefile("${path.module}/../scripts/oci_application_instance_userdata.sh", {
     GHCR_TOKEN = var.OCI_USERDATA_GHCR_TOKEN
   })
-  ocpus         = var.OCI_APP_OCPUS
-  memory_in_gbs = var.OCI_APP_MEMORY_GBS
+  ocpus         = 2
+  memory_in_gbs = 12
+  depends_on    = [module.networking]
+}
+
+# 애플리케이션 인스턴스 fallback (1 OCPU / 6GB)
+# 위 인스턴스 성공 시 이 블록 제거
+module "application_instance_small" {
+  source         = "./instance"
+  compartment_id = var.OCI_TENANCY_OCID
+  instance_name  = "MONTY_APPLICATION_INSTANCE_SMALL"
+  subnet_id      = module.networking.subnet_id
+  ssh_public_key = var.OCI_SSH_PUBLIC_KEY
+  user_data      = templatefile("${path.module}/../scripts/oci_application_instance_userdata.sh", {
+    GHCR_TOKEN = var.OCI_USERDATA_GHCR_TOKEN
+  })
+  ocpus         = 1
+  memory_in_gbs = 6
   depends_on    = [module.networking]
 }
 

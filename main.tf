@@ -58,8 +58,6 @@ module "oci" {
   OCI_USERDATA_GHCR_TOKEN = var.AWS_EC2_USERDATA_GHCR_TOKEN
   DB_USERNAME             = var.DB_USERNAME
   DB_PASSWORD             = var.DB_PASSWORD
-  OCI_APP_OCPUS           = var.OCI_APP_OCPUS
-  OCI_APP_MEMORY_GBS      = var.OCI_APP_MEMORY_GBS
 }
 
 module "cloudflare" {
