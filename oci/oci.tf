@@ -22,7 +22,7 @@ module "application_instance" {
   user_data      = templatefile("${path.module}/../scripts/oci_application_instance_userdata.sh", {
     GHCR_TOKEN = var.OCI_USERDATA_GHCR_TOKEN
   })
-  ocpus         = 4
-  memory_in_gbs = 24
+  ocpus         = 1
+  memory_in_gbs = 6
   depends_on    = [module.networking]
 }
