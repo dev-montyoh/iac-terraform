@@ -1,3 +1,14 @@
+# 기존 리소스 이름 변경 추적 (삭제/재생성 방지)
+moved {
+  from = oci_core_security_list.sl
+  to   = oci_core_security_list.app_sl
+}
+
+moved {
+  from = oci_core_subnet.subnet
+  to   = oci_core_subnet.app_subnet
+}
+
 # VCN
 resource "oci_core_vcn" "vcn" {
   compartment_id = var.compartment_id
