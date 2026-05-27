@@ -26,11 +26,11 @@ resource "oci_core_route_table" "rt" {
   }
 }
 
-# Security List
-resource "oci_core_security_list" "sl" {
+# 애플리케이션 Security List (22, 80, 443)
+resource "oci_core_security_list" "app_sl" {
   compartment_id = var.compartment_id
   vcn_id         = oci_core_vcn.vcn.id
-  display_name   = "${var.vcn_name}_SL"
+  display_name   = "${var.vcn_name}_APP_SL"
 
   egress_security_rules {
     destination = "0.0.0.0/0"
@@ -38,7 +38,7 @@ resource "oci_core_security_list" "sl" {
   }
 
   dynamic "ingress_security_rules" {
-    for_each = var.ingress_ports
+    for_each = var.app_ingress_ports
     content {
       protocol = "6"
       source   = "0.0.0.0/0"
@@ -50,12 +50,46 @@ resource "oci_core_security_list" "sl" {
   }
 }
 
-# Subnet
-resource "oci_core_subnet" "subnet" {
+# 애플리케이션 Subnet
+resource "oci_core_subnet" "app_subnet" {
   compartment_id    = var.compartment_id
   vcn_id            = oci_core_vcn.vcn.id
-  cidr_block        = var.subnet_cidr
-  display_name      = "${var.vcn_name}_SUBNET"
+  cidr_block        = var.app_subnet_cidr
+  display_name      = "${var.vcn_name}_APP_SUBNET"
   route_table_id    = oci_core_route_table.rt.id
-  security_list_ids = [oci_core_security_list.sl.id]
+  security_list_ids = [oci_core_security_list.app_sl.id]
+}
+
+# 데이터베이스 Security List (22, 5432)
+resource "oci_core_security_list" "db_sl" {
+  compartment_id = var.compartment_id
+  vcn_id         = oci_core_vcn.vcn.id
+  display_name   = "${var.vcn_name}_DB_SL"
+
+  egress_security_rules {
+    destination = "0.0.0.0/0"
+    protocol    = "all"
+  }
+
+  dynamic "ingress_security_rules" {
+    for_each = var.db_ingress_ports
+    content {
+      protocol = "6"
+      source   = "0.0.0.0/0"
+      tcp_options {
+        min = ingress_security_rules.value
+        max = ingress_security_rules.value
+      }
+    }
+  }
+}
+
+# 데이터베이스 Subnet
+resource "oci_core_subnet" "db_subnet" {
+  compartment_id    = var.compartment_id
+  vcn_id            = oci_core_vcn.vcn.id
+  cidr_block        = var.db_subnet_cidr
+  display_name      = "${var.vcn_name}_DB_SUBNET"
+  route_table_id    = oci_core_route_table.rt.id
+  security_list_ids = [oci_core_security_list.db_sl.id]
 }

@@ -6,12 +6,22 @@ variable "cidr_block" {
   default = "10.0.0.0/16"
 }
 
-variable "subnet_cidr" {
+variable "app_subnet_cidr" {
   type    = string
   default = "10.0.1.0/24"
 }
 
-variable "ingress_ports" {
+variable "db_subnet_cidr" {
+  type    = string
+  default = "10.0.2.0/24"
+}
+
+variable "app_ingress_ports" {
   type    = list(number)
   default = [22, 80, 443]
+}
+
+variable "db_ingress_ports" {
+  type    = list(number)
+  default = [22, 5432]
 }

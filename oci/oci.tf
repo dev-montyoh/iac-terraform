@@ -4,12 +4,14 @@
 
 # 네트워크 (VCN, 서브넷, 보안그룹, IGW)
 module "networking" {
-  source         = "./networking"
-  compartment_id = var.OCI_TENANCY_OCID
-  vcn_name       = "MONTY_APP"
-  cidr_block     = "10.0.0.0/16"
-  subnet_cidr    = "10.0.1.0/24"
-  ingress_ports  = [22, 80, 443, 5432]
+  source            = "./networking"
+  compartment_id    = var.OCI_TENANCY_OCID
+  vcn_name          = "MONTY_APP"
+  cidr_block        = "10.0.0.0/16"
+  app_subnet_cidr   = "10.0.1.0/24"
+  db_subnet_cidr    = "10.0.2.0/24"
+  app_ingress_ports = [22, 80, 443]
+  db_ingress_ports  = [22, 5432]
 }
 
 # 애플리케이션 인스턴스 fallback (1 OCPU / 6GB)
@@ -18,7 +20,7 @@ module "application_instance_small" {
   source         = "./instance"
   compartment_id = var.OCI_TENANCY_OCID
   instance_name  = "MONTY_APPLICATION_INSTANCE_SMALL"
-  subnet_id      = module.networking.subnet_id
+  subnet_id      = module.networking.app_subnet_id
   ssh_public_key = var.OCI_SSH_PUBLIC_KEY
   user_data      = templatefile("${path.module}/../scripts/oci_application_instance_userdata.sh", {
     GHCR_TOKEN = var.OCI_USERDATA_GHCR_TOKEN
@@ -34,7 +36,7 @@ module "application_instance" {
   source         = "./instance"
   compartment_id = var.OCI_TENANCY_OCID
   instance_name  = "MONTY_APPLICATION_INSTANCE"
-  subnet_id      = module.networking.subnet_id
+  subnet_id      = module.networking.app_subnet_id
   ssh_public_key = var.OCI_SSH_PUBLIC_KEY
   user_data      = templatefile("${path.module}/../scripts/oci_application_instance_userdata.sh", {
     GHCR_TOKEN = var.OCI_USERDATA_GHCR_TOKEN
@@ -49,7 +51,7 @@ module "database_instance" {
   source         = "./instance"
   compartment_id = var.OCI_TENANCY_OCID
   instance_name  = "MONTY_DATABASE_INSTANCE"
-  subnet_id      = module.networking.subnet_id
+  subnet_id      = module.networking.db_subnet_id
   ssh_public_key = var.OCI_SSH_PUBLIC_KEY
   user_data      = templatefile("${path.module}/../scripts/oci_database_instance_userdata.sh", {
     DB_USERNAME = var.DB_USERNAME
