@@ -55,8 +55,7 @@ module "oci" {
   source             = "./oci"
   OCI_TENANCY_OCID   = var.OCI_TENANCY_OCID
   OCI_SSH_PUBLIC_KEY = var.AWS_EC2_SSH_PUBLIC_KEY
-  DB_USERNAME        = var.DB_USERNAME
-  DB_PASSWORD        = var.DB_PASSWORD
+  GHCR_TOKEN         = var.AWS_EC2_USERDATA_GHCR_TOKEN
 }
 
 module "cloudflare" {
