@@ -39,4 +39,8 @@ resource "oci_core_instance" "instance" {
     ssh_authorized_keys = var.ssh_public_key
     user_data           = base64encode(var.user_data)
   }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
