@@ -41,8 +41,7 @@ resource "oci_core_instance" "instance" {
   }
 
   lifecycle {
-    prevent_destroy = true
-    ignore_changes  = [
+    ignore_changes = [
       availability_domain,  # data source 재평가로 인한 불필요한 교체 방지
       source_details,       # Ubuntu 최신 이미지 변경으로 인한 교체 방지
     ]
