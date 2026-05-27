@@ -39,11 +39,4 @@ resource "oci_core_instance" "instance" {
     ssh_authorized_keys = var.ssh_public_key
     user_data           = base64encode(var.user_data)
   }
-
-  lifecycle {
-    ignore_changes = [
-      availability_domain,  # data source 재평가로 인한 불필요한 교체 방지
-      source_details,       # Ubuntu 최신 이미지 변경으로 인한 교체 방지
-    ]
-  }
 }
