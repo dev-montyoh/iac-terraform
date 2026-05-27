@@ -1,12 +1,13 @@
 # 기존 리소스 이름 변경 추적 (삭제/재생성 방지)
+# 기존 서브넷은 DB용으로 유지 (인스턴스 교체 방지)
 moved {
   from = oci_core_security_list.sl
-  to   = oci_core_security_list.app_sl
+  to   = oci_core_security_list.db_sl
 }
 
 moved {
   from = oci_core_subnet.subnet
-  to   = oci_core_subnet.app_subnet
+  to   = oci_core_subnet.db_subnet
 }
 
 # VCN
