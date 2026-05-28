@@ -11,8 +11,8 @@ terraform {
     }
     # Oracle Cloud Infrastructure
     oci = {
-      source  = "oracle/oci"
-      version = "6.36.0"
+      source  = "hashicorp/oci"
+      version = "8.15.0"
     }
   }
 }
