@@ -11,8 +11,8 @@ terraform {
     }
     # Oracle Cloud Infrastructure
     oci = {
-      source  = "oracle/oci"
-      version = "6.36.0"
+      source  = "hashicorp/oci"
+      version = "8.15.0"
     }
   }
 }
@@ -62,7 +62,8 @@ module "cloudflare" {
   source                         = "./cloudflare"
   service_server_public_ip       = module.aws.service_server_public_ip
   database_server_public_ip      = module.aws.database_server_public_ip
-  depends_on                     = [module.aws]
+  oci_instance_public_ip         = module.oci.app_server_public_ip
+  depends_on                     = [module.aws, module.oci]
   CLOUDFLARE_ZONE_ID             = var.CLOUDFLARE_ZONE_ID
   CLOUDFLARE_ZONE_ID_MONTYOH_DEV = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
   CLOUDFLARE_ACCOUNT_ID          = var.CLOUDFLARE_ACCOUNT_ID
