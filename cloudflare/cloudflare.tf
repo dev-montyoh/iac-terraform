@@ -170,6 +170,17 @@ resource "cloudflare_dns_record" "valheim_montyoh_dev" {
   proxied = false
 }
 
+# corekeeper.montyoh.dev - Core Keeper direct connect
+resource "cloudflare_dns_record" "corekeeper_montyoh_dev" {
+  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
+  name    = "corekeeper.montyoh.dev"
+  ttl     = 1
+  type    = "A"
+  comment = "corekeeper.montyoh.dev record (Core Keeper OCI instance)"
+  content = var.oci_instance_public_ip
+  proxied = false
+}
+
 # Workers - 서버 다운 시 공사중 페이지
 resource "cloudflare_workers_script" "maintenance" {
   account_id  = var.CLOUDFLARE_ACCOUNT_ID
