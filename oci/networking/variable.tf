@@ -1,5 +1,5 @@
 variable "compartment_id" { type = string }
-variable "vcn_name"       { type = string }
+variable "vcn_name" { type = string }
 
 variable "cidr_block" {
   type    = string
@@ -14,4 +14,9 @@ variable "subnet_cidr" {
 variable "ingress_ports" {
   type    = list(number)
   default = [22, 80, 443]
+}
+
+variable "udp_ingress_ports" {
+  type    = list(number)
+  default = []
 }
