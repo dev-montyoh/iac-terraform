@@ -48,6 +48,18 @@ resource "oci_core_security_list" "sl" {
       }
     }
   }
+
+  dynamic "ingress_security_rules" {
+    for_each = var.udp_ingress_ports
+    content {
+      protocol = "17"
+      source   = "0.0.0.0/0"
+      udp_options {
+        min = ingress_security_rules.value
+        max = ingress_security_rules.value
+      }
+    }
+  }
 }
 
 # Subnet
