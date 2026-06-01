@@ -10,7 +10,7 @@ module "networking" {
   cidr_block        = "10.0.0.0/16"
   subnet_cidr       = "10.0.1.0/24"
   ingress_ports     = [22, 80, 443, 5432]
-  udp_ingress_ports = [27015]
+  udp_ingress_ports = [2456, 2457, 2458]
 }
 
 # 애플리케이션 인스턴스 (앱 + 데이터베이스)

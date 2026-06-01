@@ -159,13 +159,13 @@ resource "cloudflare_dns_record" "oracle_montyoh_dev_db" {
   proxied = false
 }
 
-# corekeeper.montyoh.dev - Core Keeper direct connect
-resource "cloudflare_dns_record" "corekeeper_montyoh_dev" {
+# valheim.montyoh.dev - Valheim direct connect
+resource "cloudflare_dns_record" "valheim_montyoh_dev" {
   zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  name    = "corekeeper.montyoh.dev"
+  name    = "valheim.montyoh.dev"
   ttl     = 1
   type    = "A"
-  comment = "corekeeper.montyoh.dev record (Core Keeper OCI instance)"
+  comment = "valheim.montyoh.dev record (Valheim OCI instance)"
   content = var.oci_instance_public_ip
   proxied = false
 }
