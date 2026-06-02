@@ -7,12 +7,14 @@ resource "oci_budget_budget" "monthly_actual_spend" {
   targets        = [var.compartment_id]
 }
 
-resource "oci_budget_alert_rule" "monthly_actual_spend_over_1_usd" {
+resource "oci_budget_alert_rule" "this" {
+  for_each = var.alerts
+
   budget_id      = oci_budget_budget.monthly_actual_spend.id
-  display_name   = var.alert_display_name
-  message        = var.message
+  display_name   = each.value.display_name
+  message        = each.value.message
   recipients     = join(",", var.budgets_alarm_targets)
-  threshold      = var.threshold
-  threshold_type = var.threshold_type
-  type           = var.alert_type
+  threshold      = each.value.threshold
+  threshold_type = coalesce(each.value.threshold_type, "ABSOLUTE")
+  type           = coalesce(each.value.type, "ACTUAL")
 }
