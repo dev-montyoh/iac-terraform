@@ -9,14 +9,6 @@ module "iam" {
   users           = var.users
 }
 
-module "lightsail" {
-  source                      = "./lightsail"
-  AWS_SSH_PUBLIC_KEY          = var.AWS_SSH_PUBLIC_KEY
-  DB_USERNAME                 = var.DB_USERNAME
-  DB_PASSWORD                 = var.DB_PASSWORD
-  AWS_EC2_USERDATA_GHCR_TOKEN = var.AWS_EC2_USERDATA_GHCR_TOKEN
-}
-
 module "billing" {
   source                = "./billing"
   BUDGETS_ALARM_TARGETS = var.BUDGETS_ALARM_TARGETS
