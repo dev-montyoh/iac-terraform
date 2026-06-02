@@ -30,22 +30,25 @@ module "app_instance" {
   depends_on    = [module.networking]
 }
 
-# 월 실제 사용액이 1달러를 넘으면 알림
-resource "oci_budget_budget" "monthly_actual_spend" {
-  amount         = 1
-  compartment_id = var.OCI_TENANCY_OCID
-  display_name   = "monthly_actual_spend"
-  reset_period   = "MONTHLY"
-  target_type    = "COMPARTMENT"
-  targets        = [var.OCI_TENANCY_OCID]
+# 예산 알림
+module "budget_actual_spend_over_1_usd" {
+  source                = "./budget"
+  amount                = 1
+  compartment_id        = var.OCI_TENANCY_OCID
+  display_name          = "monthly_actual_spend"
+  alert_display_name    = "monthly_actual_spend_over_1_usd"
+  budgets_alarm_targets = var.BUDGETS_ALARM_TARGETS
+  message               = "OCI actual spend exceeded 1 USD."
+  threshold             = 1
 }
 
-resource "oci_budget_alert_rule" "monthly_actual_spend_over_1_usd" {
-  budget_id      = oci_budget_budget.monthly_actual_spend.id
-  display_name   = "monthly_actual_spend_over_1_usd"
-  message        = "OCI actual spend exceeded 1 USD."
-  recipients     = join(",", var.BUDGETS_ALARM_TARGETS)
-  threshold      = 1
-  threshold_type = "ABSOLUTE"
-  type           = "ACTUAL"
+module "budget_actual_spend_over_5_usd" {
+  source                = "./budget"
+  amount                = 5
+  compartment_id        = var.OCI_TENANCY_OCID
+  display_name          = "monthly_actual_spend_5_usd"
+  alert_display_name    = "monthly_actual_spend_over_5_usd"
+  budgets_alarm_targets = var.BUDGETS_ALARM_TARGETS
+  message               = "OCI actual spend exceeded 5 USD."
+  threshold             = 5
 }
