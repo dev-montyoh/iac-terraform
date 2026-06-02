@@ -31,7 +31,7 @@ jobs:
       - name: Redeploy PostgreSQL to Oracle
         uses: appleboy/ssh-action@v1
         with:
-          host: oracle.ssh.montyoh.dev
+          host: ssh.montyoh.dev
           username: ubuntu
           key_path: ./secrets-store/key/ec2-ssh-key
           script: |
