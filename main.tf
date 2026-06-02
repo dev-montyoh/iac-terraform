@@ -52,18 +52,17 @@ provider "oci" {
 }
 
 module "oci" {
-  source             = "./oci"
-  OCI_TENANCY_OCID   = var.OCI_TENANCY_OCID
-  OCI_SSH_PUBLIC_KEY = var.AWS_EC2_SSH_PUBLIC_KEY
-  GHCR_TOKEN         = var.AWS_EC2_USERDATA_GHCR_TOKEN
+  source                = "./oci"
+  OCI_TENANCY_OCID      = var.OCI_TENANCY_OCID
+  OCI_SSH_PUBLIC_KEY    = var.AWS_EC2_SSH_PUBLIC_KEY
+  GHCR_TOKEN            = var.AWS_EC2_USERDATA_GHCR_TOKEN
+  BUDGETS_ALARM_TARGETS = var.BUDGETS_ALARM_TARGETS
 }
 
 module "cloudflare" {
   source                         = "./cloudflare"
-  service_server_public_ip       = module.aws.service_server_public_ip
-  database_server_public_ip      = module.aws.database_server_public_ip
   oci_instance_public_ip         = module.oci.app_server_public_ip
-  depends_on                     = [module.aws, module.oci]
+  depends_on                     = [module.oci]
   CLOUDFLARE_ZONE_ID             = var.CLOUDFLARE_ZONE_ID
   CLOUDFLARE_ZONE_ID_MONTYOH_DEV = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
   CLOUDFLARE_ACCOUNT_ID          = var.CLOUDFLARE_ACCOUNT_ID

@@ -29,3 +29,26 @@ module "app_instance" {
   memory_in_gbs = 12
   depends_on    = [module.networking]
 }
+
+# 예산 알림
+module "budget_actual_spend_over_1_usd" {
+  source                = "./budget"
+  amount                = 1
+  compartment_id        = var.OCI_TENANCY_OCID
+  display_name          = "monthly_actual_spend"
+  alert_display_name    = "monthly_actual_spend_over_1_usd"
+  budgets_alarm_targets = var.BUDGETS_ALARM_TARGETS
+  message               = "OCI actual spend exceeded 1 USD."
+  threshold             = 1
+}
+
+module "budget_actual_spend_over_5_usd" {
+  source                = "./budget"
+  amount                = 5
+  compartment_id        = var.OCI_TENANCY_OCID
+  display_name          = "monthly_actual_spend_5_usd"
+  alert_display_name    = "monthly_actual_spend_over_5_usd"
+  budgets_alarm_targets = var.BUDGETS_ALARM_TARGETS
+  message               = "OCI actual spend exceeded 5 USD."
+  threshold             = 5
+}
