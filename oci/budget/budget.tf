@@ -15,6 +15,6 @@ resource "oci_budget_alert_rule" "this" {
   message        = each.value.message
   recipients     = join(",", var.budgets_alarm_targets)
   threshold      = each.value.threshold
-  threshold_type = lookup(each.value, "threshold_type", "ABSOLUTE")
-  type           = lookup(each.value, "type", "ACTUAL")
+  threshold_type = coalesce(each.value.threshold_type, "ABSOLUTE")
+  type           = coalesce(each.value.type, "ACTUAL")
 }
