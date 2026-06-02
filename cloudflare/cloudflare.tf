@@ -14,7 +14,7 @@ resource "cloudflare_dns_record" "dev_monty_web" {
   ttl     = 1
   type    = "A"
   comment = "www.dev_monty.me record"
-  content = var.service_server_public_ip
+  content = var.oci_instance_public_ip
   proxied = true
 }
 
@@ -25,7 +25,7 @@ resource "cloudflare_dns_record" "dev_monty_ssh" {
   ttl     = 1
   type    = "A"
   comment = "ssh.dev-monty.me record"
-  content = var.service_server_public_ip
+  content = var.oci_instance_public_ip
   proxied = false
 }
 
@@ -36,7 +36,7 @@ resource "cloudflare_dns_record" "dev_monty_ssh_database" {
   ttl     = 1
   type    = "A"
   comment = "db.dev-monty.me record"
-  content = var.database_server_public_ip
+  content = var.oci_instance_public_ip
   proxied = false
 }
 
@@ -47,7 +47,7 @@ resource "cloudflare_dns_record" "dev_monty_web_payment" {
   ttl     = 1
   type    = "A"
   comment = "payment.dev-monty.me record"
-  content = var.service_server_public_ip
+  content = var.oci_instance_public_ip
   proxied = true
 }
 
@@ -59,7 +59,7 @@ resource "cloudflare_dns_record" "montyoh_dev_root" {
   ttl     = 1
   type    = "A"
   comment = "montyoh.dev record"
-  content = var.service_server_public_ip
+  content = var.oci_instance_public_ip
   proxied = true
 }
 
@@ -70,7 +70,7 @@ resource "cloudflare_dns_record" "montyoh_dev_www" {
   ttl     = 1
   type    = "A"
   comment = "www.montyoh.dev record"
-  content = var.service_server_public_ip
+  content = var.oci_instance_public_ip
   proxied = true
 }
 
@@ -81,7 +81,7 @@ resource "cloudflare_dns_record" "montyoh_dev_ssh" {
   ttl     = 1
   type    = "A"
   comment = "ssh.montyoh.dev record"
-  content = var.service_server_public_ip
+  content = var.oci_instance_public_ip
   proxied = false
 }
 
@@ -92,7 +92,7 @@ resource "cloudflare_dns_record" "montyoh_dev_ssh_database" {
   ttl     = 1
   type    = "A"
   comment = "db.montyoh.dev record"
-  content = var.database_server_public_ip
+  content = var.oci_instance_public_ip
   proxied = false
 }
 
@@ -103,7 +103,7 @@ resource "cloudflare_dns_record" "montyoh_dev_payment" {
   ttl     = 1
   type    = "A"
   comment = "payment.montyoh.dev record"
-  content = var.service_server_public_ip
+  content = var.oci_instance_public_ip
   proxied = true
 }
 
@@ -114,49 +114,8 @@ resource "cloudflare_dns_record" "montyoh_dev_xcelerate" {
   ttl     = 1
   type    = "A"
   comment = "xcelerate.montyoh.dev record"
-  content = var.service_server_public_ip
-  proxied = true
-}
-
-# oracle.montyoh.dev - OCI 인스턴스 테스트용
-resource "cloudflare_dns_record" "oracle_montyoh_dev_root" {
-  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  name    = "oracle.montyoh.dev"
-  ttl     = 1
-  type    = "A"
-  comment = "oracle.montyoh.dev record (OCI instance)"
   content = var.oci_instance_public_ip
   proxied = true
-}
-
-resource "cloudflare_dns_record" "oracle_montyoh_dev_www" {
-  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  name    = "oracle.www.montyoh.dev"
-  ttl     = 1
-  type    = "A"
-  comment = "oracle.www.montyoh.dev record (OCI instance)"
-  content = var.oci_instance_public_ip
-  proxied = true
-}
-
-resource "cloudflare_dns_record" "oracle_montyoh_dev_ssh" {
-  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  name    = "oracle.ssh.montyoh.dev"
-  ttl     = 1
-  type    = "A"
-  comment = "oracle.ssh.montyoh.dev record (OCI instance)"
-  content = var.oci_instance_public_ip
-  proxied = false
-}
-
-resource "cloudflare_dns_record" "oracle_montyoh_dev_db" {
-  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  name    = "oracle.db.montyoh.dev"
-  ttl     = 1
-  type    = "A"
-  comment = "oracle.db.montyoh.dev record (OCI instance)"
-  content = var.oci_instance_public_ip
-  proxied = false
 }
 
 # Workers - 서버 다운 시 공사중 페이지
