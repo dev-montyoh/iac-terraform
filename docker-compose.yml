@@ -93,6 +93,11 @@ services:
     networks:
       backend-network:
     restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      XCELERATE_DB_URL: ${XCELERATE_DB_URL}
+      XCELERATE_DB_USERNAME: ${XCELERATE_DB_USERNAME}
+      XCELERATE_DB_PASSWORD: ${XCELERATE_DB_PASSWORD}
     volumes:
       - xcelerate_data:/app/data
 
