@@ -52,10 +52,11 @@ provider "oci" {
 }
 
 module "oci" {
-  source             = "./oci"
-  OCI_TENANCY_OCID   = var.OCI_TENANCY_OCID
-  OCI_SSH_PUBLIC_KEY = var.AWS_EC2_SSH_PUBLIC_KEY
-  GHCR_TOKEN         = var.AWS_EC2_USERDATA_GHCR_TOKEN
+  source                = "./oci"
+  OCI_TENANCY_OCID      = var.OCI_TENANCY_OCID
+  OCI_SSH_PUBLIC_KEY    = var.AWS_EC2_SSH_PUBLIC_KEY
+  GHCR_TOKEN            = var.AWS_EC2_USERDATA_GHCR_TOKEN
+  BUDGETS_ALARM_TARGETS = var.BUDGETS_ALARM_TARGETS
 }
 
 module "cloudflare" {

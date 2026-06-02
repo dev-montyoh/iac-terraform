@@ -29,3 +29,23 @@ module "app_instance" {
   memory_in_gbs = 12
   depends_on    = [module.networking]
 }
+
+# 월 실제 사용액이 1달러를 넘으면 알림
+resource "oci_budget_budget" "monthly_actual_spend" {
+  amount         = 1
+  compartment_id = var.OCI_TENANCY_OCID
+  display_name   = "monthly_actual_spend"
+  reset_period   = "MONTHLY"
+  target_type    = "COMPARTMENT"
+  targets        = [var.OCI_TENANCY_OCID]
+}
+
+resource "oci_budget_alert_rule" "monthly_actual_spend_over_1_usd" {
+  budget_id      = oci_budget_budget.monthly_actual_spend.id
+  display_name   = "monthly_actual_spend_over_1_usd"
+  message        = "OCI actual spend exceeded 1 USD."
+  recipients     = join(",", var.BUDGETS_ALARM_TARGETS)
+  threshold      = 1
+  threshold_type = "ABSOLUTE"
+  type           = "ACTUAL"
+}
