@@ -62,11 +62,26 @@ resource "cloudflare_dns_record" "montyoh_dev_payment" {
   proxied = true
 }
 
-# 게임 서버 DNS
-module "game_servers" {
-  source    = "./game_servers"
-  zone_id   = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  server_ip = var.oci_instance_public_ip
+##  서브 도메인 - Valheim 게임 서버
+resource "cloudflare_dns_record" "montyoh_dev_valheim" {
+  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
+  name    = "valheim.montyoh.dev"
+  ttl     = 1
+  type    = "A"
+  comment = "valheim.montyoh.dev record"
+  content = var.oci_instance_public_ip
+  proxied = false
+}
+
+##  서브 도메인 - Core Keeper 게임 서버
+resource "cloudflare_dns_record" "montyoh_dev_corekeeper" {
+  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
+  name    = "corekeeper.montyoh.dev"
+  ttl     = 1
+  type    = "A"
+  comment = "corekeeper.montyoh.dev record"
+  content = var.oci_instance_public_ip
+  proxied = false
 }
 
 ##  서브 도메인 - Xcelerate Demo
