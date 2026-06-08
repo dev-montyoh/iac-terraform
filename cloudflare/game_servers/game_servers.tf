@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    cloudflare = {
+      source = "cloudflare/cloudflare"
+    }
+  }
+}
+
 # 게임 서버 DNS 레코드 (proxied=false, 게임 클라이언트 직접 연결)
 
 resource "cloudflare_dns_record" "valheim" {
