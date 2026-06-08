@@ -84,6 +84,17 @@ resource "cloudflare_dns_record" "montyoh_dev_corekeeper" {
   proxied = false
 }
 
+##  서브 도메인 - Palworld 게임 서버
+resource "cloudflare_dns_record" "montyoh_dev_palworld" {
+  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
+  name    = "palworld.montyoh.dev"
+  ttl     = 1
+  type    = "A"
+  comment = "palworld.montyoh.dev record"
+  content = var.oci_instance_public_ip
+  proxied = false
+}
+
 ##  서브 도메인 - Xcelerate Demo
 resource "cloudflare_dns_record" "montyoh_dev_xcelerate" {
   zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
