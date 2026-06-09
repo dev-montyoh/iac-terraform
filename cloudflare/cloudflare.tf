@@ -6,6 +6,15 @@ terraform {
   }
 }
 
+# R2 버킷 - 공통 정적 파일 (static.montyoh.dev)
+module "r2" {
+  source                = "./r2"
+  CLOUDFLARE_ACCOUNT_ID = var.CLOUDFLARE_ACCOUNT_ID
+  bucket_name           = "common-static"
+  domain                = "static.montyoh.dev"
+  zone_id               = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
+}
+
 # montyoh.dev 도메인 설정
 ##  루트 도메인 - 웹 접속
 resource "cloudflare_dns_record" "montyoh_dev_root" {
@@ -80,17 +89,6 @@ resource "cloudflare_dns_record" "montyoh_dev_corekeeper" {
   ttl     = 1
   type    = "A"
   comment = "corekeeper.montyoh.dev record"
-  content = var.oci_instance_public_ip
-  proxied = false
-}
-
-##  서브 도메인 - Palworld 게임 서버
-resource "cloudflare_dns_record" "montyoh_dev_palworld" {
-  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  name    = "palworld.montyoh.dev"
-  ttl     = 1
-  type    = "A"
-  comment = "palworld.montyoh.dev record"
   content = var.oci_instance_public_ip
   proxied = false
 }
