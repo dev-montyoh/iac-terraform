@@ -4,7 +4,6 @@
 
 # iac-terraform
 
-[![Terraform Cloud](https://app.terraform.io/app/dev-monty/workspaces/iac-terraform/badge.svg)](https://app.terraform.io/app/dev-monty/workspaces/iac-terraform)
 [![Multi Cloud](https://img.shields.io/badge/Cloud-OCI%20·%20AWS%20·%20Cloudflare-F80000?logo=oracle&logoColor=white)](https://github.com/dev-montyoh/iac-terraform)
 
 **개인 프로젝트의 모든 클라우드 인프라를 Terraform으로 코드화하여 한 곳에서 관리**
