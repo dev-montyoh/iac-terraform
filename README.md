@@ -1,67 +1,69 @@
-# Terraform으로 관리하는 클라우드 인프라 (AWS & Cloudflare)
+<br/>
 
-개인 프로젝트에 필요한 클라우드 인프라를 Terraform을 사용하여 코드형 인프라(Infrastructure as Code, IaC)로 관리하는 리포지토리입니다. AWS와 Cloudflare 리소스를 코드로 정의하고, Terraform Cloud를 통해 배포를 자동화하여 일관성 있고 반복 가능한 인프라 환경 구축을 목표로 합니다.
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg" alt="Terraform" width="72" />
+
+# iac-terraform
+
+[![Terraform Cloud](https://app.terraform.io/app/dev-monty/workspaces/iac-terraform/badge.svg)](https://app.terraform.io/app/dev-monty/workspaces/iac-terraform)
+[![Multi Cloud](https://img.shields.io/badge/Cloud-OCI%20·%20AWS%20·%20Cloudflare-F80000?logo=oracle&logoColor=white)](https://github.com/dev-montyoh/iac-terraform)
+
+**개인 프로젝트의 모든 클라우드 인프라를 Terraform으로 코드화하여 한 곳에서 관리**
+
+---
+
+실무에서 Terraform으로 인프라를 관리했던 경험을 살려 토이 프로젝트로 시작했습니다. 인프라 레벨에서 코드로 관리하는 방식이 유용하다고 느껴, 지금은 개인적으로 사용하는 모든 인프라를 이 프로젝트에서 관리하게 되었습니다.
+
+현재는 **OCI를 메인 클라우드**로 사용하며, VCN·서브넷·보안 리스트 등 네트워크 구성과 Ampere A1 기반 컴퓨트 인스턴스, 예산 알림까지 모듈화하여 관리합니다. **AWS**는 IAM·예산 알림에 사용하고, EC2·SSM·Lightsail 등 컴퓨트 모듈은 코드베이스에 유지하되 현재 비활성화 상태입니다. **Cloudflare**(DNS, R2, Workers, D1)는 계속 운영 중입니다.
+
+Terraform Cloud와 GitHub를 연동하여 실제 인프라에 배포합니다.
+
+---
+
+## 사용 기술
+
+- Terraform (Terraform Cloud)
+- OCI, AWS, Cloudflare (DNS / R2 / Workers)
+- GitHub Actions
+- Docker
+
+---
 
 ## 주요 특징
 
-- **Infrastructure as Code**: Terraform을 사용하여 모든 인프라를 코드로 명확하게 정의하고 버전 관리합니다.
-- **Multi-Provider**: AWS의 핵심 서비스와 Cloudflare의 DNS, 스토리지 기능을 통합 관리합니다.
-- **모듈식 설계**: 서비스별 모듈화를 통해 코드의 재사용성과 유지보수성을 극대화했습니다.
-- **CI/CD 자동화**: Terraform Cloud의 VCS 연동을 통해 코드 변경 시 자동으로 Plan/Apply가 실행됩니다.
-- **형상 관리**: 변수 파일을 기능(`users`, `policies` 등)에 따라 분리하여 관리의 편의성을 높였습니다.
+- **Infrastructure as Code** — 모든 인프라를 코드로 정의하고 버전 관리
+- **멀티 클라우드** — OCI · AWS · Cloudflare를 하나의 레포에서 통합 관리
+- **모듈식 설계** — 서비스별 모듈화로 재사용성·유지보수성 확보
+- **CI/CD 자동화** — Terraform Cloud VCS 연동: push → Plan → 승인 → Apply
+- **비용 관리** — OCI · AWS 예산 알림으로 과금 모니터링
 
-## 프로젝트 구조
-
-```
-/
-├── main.tf                         # Terraform 실행의 시작점, 전체 모듈 구성
-├── variable.tf                     # 루트 모듈에서 사용하는 변수 선언
-├── *.auto.tfvars                   # 사용자, 정책 등 변수 값 자동 주입
-│
-├── aws/                            # AWS 관련 리소스 모음
-│   ├── aws.tf                      # 모듈 호출 정의
-│   ├── ec2/                        # EC2 인스턴스, 보안 그룹
-│   ├── elastic_ip/                 # EC2 고정 IP
-│   ├── key_pair/                   # SSH 키페어
-│   ├── lightsail/                  # Lightsail 인스턴스 (DB 서버)
-│   ├── iam/                        # IAM 사용자, 그룹, 정책, 역할
-│   ├── ssm/                        # Systems Manager (EC2 자동 시작/중지)
-│   └── billing/                    # 예산 및 결제 알림
-│
-├── cloudflare/                     # Cloudflare 관련 리소스 모음
-│   ├── cloudflare.tf               # DNS 레코드, R2 커스텀 도메인 정의
-│   ├── r2/                         # R2 오브젝트 스토리지
-│   └── d1/                         # D1 서버리스 데이터베이스
-│
-├── scripts/                        # EC2/Lightsail User Data 셸 스크립트
-└── README.md
-```
+---
 
 ## 관리 대상 리소스
 
-- **AWS**
-  - **컴퓨팅**: EC2 인스턴스 (애플리케이션 서버), Lightsail 인스턴스 (DB 서버)
-  - **네트워킹**: 보안 그룹, Elastic IP, Lightsail Static IP
-  - **보안 및 자격 증명**: IAM 사용자, 그룹, 역할, 정책, Key Pair
-  - **운영 관리**: SSM Maintenance Window (EC2 오전 8시 시작 / 오후 10시 중지)
-  - **비용 관리**: AWS 예산 알림 (85% / 100% / 100% 예보, $20 한도)
-- **Cloudflare**
-  - **DNS**: `www`, `ssh`, `db`, `payment`, `cdn` 서브도메인 레코드
-  - **R2**: `content` 오브젝트 스토리지 버킷 (`cdn.dev-monty.me` 커스텀 도메인 연결)
+### OCI
+- **컴퓨트**: Ampere A1 인스턴스 (Ubuntu 24.04 aarch64, 4 OCPU / 24GB) — 애플리케이션 + 데이터베이스 호스팅
+- **네트워킹**: VCN(`APP_VPC`, `10.0.0.0/16`), 서브넷, 보안 그룹(TCP 22/80/443/5432 + 게임 서버 UDP 포트), Internet Gateway
+- **비용 관리**: 월간 실사용 예산 알림 ($1 / $5 임계값)
 
-## CI/CD 파이프라인
+### AWS
+- **IAM**: 사용자, 그룹, 정책(AWS 관리형 + 커스텀), 역할
+- **비용 관리**: 예산 알림
+- *EC2 / Lightsail / SSM / Elastic IP / Key Pair 모듈은 코드베이스에 유지하되 현재 미사용 (애플리케이션을 OCI로 이전)*
 
-![CICD](assets/cicd.drawio.png)
+### Cloudflare
+- **DNS** (`montyoh.dev`): `root`, `www`, `ssh`, `db`, `payment`, 게임 서버(`valheim`, `corekeeper`, `palworld`), `xcelerate` — 모두 OCI 인스턴스로 라우팅
+- **R2**: `common-static` 버킷 → `static.montyoh.dev` 커스텀 도메인 연결
+- **Workers**: 서버 다운 시 점검 페이지 (`*montyoh.dev/*` 라우트)
 
-이 프로젝트는 **Terraform Cloud**의 VCS 연동을 통해 CI/CD 파이프라인을 구성합니다.
+---
 
-- **Trigger**: GitHub 레포지토리에 코드가 push되면 Terraform Cloud에서 자동으로 워크플로우가 실행됩니다.
-- **Flow**:
-  1. **Plan**: 변경 사항을 분석하여 인프라에 적용될 내용을 미리 확인합니다.
-  2. **Apply**: Plan 검토 후 승인 시 실제 인프라에 변경 사항을 적용합니다.
+## CI/CD
 
-State 파일은 Terraform Cloud에서 중앙 관리됩니다.
+GitHub에 push하면 **Terraform Cloud**가 자동으로 `plan`을 실행하고, 검토·승인 후 `apply`합니다. State 파일은 Terraform Cloud에서 중앙 관리됩니다.
 
-## 개발 가이드
+---
 
-로컬 실행 방법 및 브랜치 전략은 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고해주세요.
+## 문서
+
+- **[아키텍처 · 프로젝트 구조 →](ARCHITECTURE.md)** — 전체 다이어그램과 폴더 구조
+- **[개발 가이드 →](CONTRIBUTING.md)** — 로컬 실행 · 브랜치 전략 · 커밋 규칙
