@@ -62,6 +62,30 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 
+  # auth
+  backend-api-server-auth:
+    image: ghcr.io/dev-montyoh/backend-api-server-auth:latest
+    container_name: backend-api-server-auth
+    ports:
+      - "3001:3001"
+    networks:
+      backend-network:
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+
   # content
   backend-api-server-content:
     image: ghcr.io/dev-montyoh/backend-api-server-content:latest
