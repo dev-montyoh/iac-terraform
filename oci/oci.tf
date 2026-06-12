@@ -9,7 +9,7 @@ module "networking" {
   vcn_name          = "APP_VPC"
   cidr_block        = "10.0.0.0/16"
   subnet_cidr       = "10.0.1.0/24"
-  ingress_ports     = [22, 80, 443, 5432]
+  ingress_ports     = [22, 80, 443, 5432, 6379]
   udp_ingress_ports = [27015, 2456, 2457, 2458, 8211]
 }
 
