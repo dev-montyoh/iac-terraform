@@ -49,6 +49,17 @@ resource "cloudflare_dns_record" "montyoh_dev_ssh" {
   proxied = false
 }
 
+##  서브 도메인 - Cache (Redis)
+resource "cloudflare_dns_record" "montyoh_dev_cache" {
+  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
+  name    = "cache.montyoh.dev"
+  ttl     = 1
+  type    = "A"
+  comment = "cache.montyoh.dev record"
+  content = var.oci_instance_public_ip
+  proxied = false
+}
+
 ##  서브 도메인 - SSH 접속 (Database)
 resource "cloudflare_dns_record" "montyoh_dev_ssh_database" {
   zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
