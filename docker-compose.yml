@@ -53,14 +53,13 @@ services:
   backend-api-server-gateway:
     image: ghcr.io/dev-montyoh/backend-api-server-gateway:latest
     container_name: backend-api-server-gateway
-    ports:
-      - "3000:3000"
     networks:
       backend-network:
     restart: always
     environment:
       SPRING_PROFILES_ACTIVE: prod
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      SERVER_PORT: 80
 
   # auth
   backend-api-server-auth:
