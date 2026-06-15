@@ -15,13 +15,14 @@ module "r2" {
   zone_id               = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
 }
 
-# R2 버킷 - Plane 파일 첨부 (plane-storage.montyoh.dev)
+# R2 버킷 - Plane 파일 첨부 (plane.static.montyoh.dev)
 module "r2_plane" {
   source                = "./r2"
   CLOUDFLARE_ACCOUNT_ID = var.CLOUDFLARE_ACCOUNT_ID
   bucket_name           = "plane-static"
   domain                = "plane.static.montyoh.dev"
   zone_id               = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
+  cors_origins          = ["https://plane.montyoh.dev"]
 }
 
 # montyoh.dev 도메인 설정
