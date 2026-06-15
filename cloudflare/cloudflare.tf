@@ -15,14 +15,13 @@ module "r2" {
   zone_id               = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
 }
 
-# R2 버킷 - Plane 파일 첨부 (plane.static.montyoh.dev)
-module "r2_plane" {
+# R2 버킷 - Vikunja 파일 첨부 (vikunja.static.montyoh.dev)
+module "r2_vikunja" {
   source                = "./r2"
   CLOUDFLARE_ACCOUNT_ID = var.CLOUDFLARE_ACCOUNT_ID
-  bucket_name           = "plane-static"
-  domain                = "plane.static.montyoh.dev"
+  bucket_name           = "vikunja-static"
+  domain                = "vikunja.static.montyoh.dev"
   zone_id               = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  cors_origins          = ["https://plane.montyoh.dev"]
 }
 
 # montyoh.dev 도메인 설정
@@ -132,17 +131,6 @@ resource "cloudflare_dns_record" "montyoh_dev_xcelerate" {
   ttl     = 1
   type    = "A"
   comment = "xcelerate.montyoh.dev record"
-  content = var.oci_instance_public_ip
-  proxied = true
-}
-
-##  서브 도메인 - Plane (이슈 트래킹)
-resource "cloudflare_dns_record" "montyoh_dev_plane" {
-  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  name    = "plane.montyoh.dev"
-  ttl     = 1
-  type    = "A"
-  comment = "plane.montyoh.dev record"
   content = var.oci_instance_public_ip
   proxied = true
 }
