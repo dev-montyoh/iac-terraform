@@ -403,6 +403,34 @@ services:
       backend-network:
     restart: always
 
+  # ── Vikunja (할 일 / 프로젝트 관리) ─────────────────────────────
+  vikunja:
+    image: vikunja/vikunja:latest
+    container_name: vikunja
+    environment:
+      VIKUNJA_DATABASE_TYPE: postgres
+      VIKUNJA_DATABASE_HOST: postgres
+      VIKUNJA_DATABASE_DATABASE: ${VIKUNJA_DB_NAME}
+      VIKUNJA_DATABASE_USER: ${VIKUNJA_DB_USERNAME}
+      VIKUNJA_DATABASE_PASSWORD: ${VIKUNJA_DB_PASSWORD}
+      VIKUNJA_SERVICE_JWTSECRET: ${VIKUNJA_JWT_SECRET}
+      VIKUNJA_SERVICE_FRONTENDURL: https://vikunja.montyoh.dev/
+      VIKUNJA_FILES_TYPE: s3
+      VIKUNJA_FILES_S3_ENDPOINT: ${CLOUDFLARE_R2_END_POINT}
+      VIKUNJA_FILES_S3_BUCKET: ${PLANE_R2_BUCKET}
+      VIKUNJA_FILES_S3_REGION: auto
+      VIKUNJA_FILES_S3_ACCESSKEY: ${PLANE_R2_ACCESS_KEY}
+      VIKUNJA_FILES_S3_SECRETKEY: ${PLANE_R2_SECRET_KEY}
+      VIKUNJA_FILES_S3_USEPATHSTYLE: "true"
+    networks:
+      backend-network:
+        aliases:
+          - vikunja
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+
 networks:
   backend-network:
     driver: bridge
