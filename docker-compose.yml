@@ -164,17 +164,43 @@ services:
       PORT: 80
 
   # ── Plane (이슈 트래킹) ──────────────────────────────────────────
+  plane-mq:
+    image: rabbitmq:3.13.6-management-alpine
+    container_name: plane-mq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${PLANE_RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${PLANE_RABBITMQ_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: ${PLANE_RABBITMQ_VHOST}
+    volumes:
+      - plane_rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      backend-network:
+    restart: always
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   plane-migrator:
     image: makeplane/plane-backend:stable
     container_name: plane-migrator
-    command: ./bin/migrate.sh
+    command: ./bin/docker-entrypoint-migrator.sh
     environment:
       DATABASE_URL: postgresql://${PLANE_DB_USERNAME}:${PLANE_DB_PASSWORD}@postgres:5432/${PLANE_DB_NAME}
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
       SECRET_KEY: ${PLANE_SECRET_KEY}
       WEB_URL: ${PLANE_WEB_URL}
+      RABBITMQ_HOST: plane-mq
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_USER: ${PLANE_RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${PLANE_RABBITMQ_PASSWORD}
+      RABBITMQ_VHOST: ${PLANE_RABBITMQ_VHOST}
     depends_on:
       postgres:
+        condition: service_healthy
+      plane-mq:
         condition: service_healthy
     networks:
       backend-network:
@@ -183,10 +209,11 @@ services:
   plane-api:
     image: makeplane/plane-backend:stable
     container_name: plane-api
-    command: ./bin/takeoff
+    command: ./bin/docker-entrypoint-api.sh
     environment:
       DATABASE_URL: postgresql://${PLANE_DB_USERNAME}:${PLANE_DB_PASSWORD}@postgres:5432/${PLANE_DB_NAME}
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
       SECRET_KEY: ${PLANE_SECRET_KEY}
       WEB_URL: ${PLANE_WEB_URL}
       CORS_ALLOWED_ORIGINS: ${PLANE_WEB_URL}
@@ -197,10 +224,16 @@ services:
       AWS_SECRET_ACCESS_KEY: ${PLANE_R2_SECRET_KEY}
       AWS_S3_ENDPOINT_URL: ${CLOUDFLARE_R2_END_POINT}
       AWS_S3_BUCKET_NAME: ${PLANE_R2_BUCKET}
-      BUCKET_NAME: ${PLANE_R2_BUCKET}
+      RABBITMQ_HOST: plane-mq
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_USER: ${PLANE_RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${PLANE_RABBITMQ_PASSWORD}
+      RABBITMQ_VHOST: ${PLANE_RABBITMQ_VHOST}
     depends_on:
       plane-migrator:
         condition: service_completed_successfully
+      plane-mq:
+        condition: service_healthy
     networks:
       backend-network:
     restart: always
@@ -208,10 +241,11 @@ services:
   plane-worker:
     image: makeplane/plane-backend:stable
     container_name: plane-worker
-    command: ./bin/worker
+    command: ./bin/docker-entrypoint-worker.sh
     environment:
       DATABASE_URL: postgresql://${PLANE_DB_USERNAME}:${PLANE_DB_PASSWORD}@postgres:5432/${PLANE_DB_NAME}
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
       SECRET_KEY: ${PLANE_SECRET_KEY}
       WEB_URL: ${PLANE_WEB_URL}
       USE_MINIO: "0"
@@ -220,10 +254,16 @@ services:
       AWS_SECRET_ACCESS_KEY: ${PLANE_R2_SECRET_KEY}
       AWS_S3_ENDPOINT_URL: ${CLOUDFLARE_R2_END_POINT}
       AWS_S3_BUCKET_NAME: ${PLANE_R2_BUCKET}
-      BUCKET_NAME: ${PLANE_R2_BUCKET}
+      RABBITMQ_HOST: plane-mq
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_USER: ${PLANE_RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${PLANE_RABBITMQ_PASSWORD}
+      RABBITMQ_VHOST: ${PLANE_RABBITMQ_VHOST}
     depends_on:
       plane-api:
         condition: service_started
+      plane-mq:
+        condition: service_healthy
     networks:
       backend-network:
     restart: always
@@ -231,15 +271,23 @@ services:
   plane-beat-worker:
     image: makeplane/plane-backend:stable
     container_name: plane-beat-worker
-    command: ./bin/beat
+    command: ./bin/docker-entrypoint-beat.sh
     environment:
       DATABASE_URL: postgresql://${PLANE_DB_USERNAME}:${PLANE_DB_PASSWORD}@postgres:5432/${PLANE_DB_NAME}
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
       SECRET_KEY: ${PLANE_SECRET_KEY}
       WEB_URL: ${PLANE_WEB_URL}
+      RABBITMQ_HOST: plane-mq
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_USER: ${PLANE_RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${PLANE_RABBITMQ_PASSWORD}
+      RABBITMQ_VHOST: ${PLANE_RABBITMQ_VHOST}
     depends_on:
       plane-api:
         condition: service_started
+      plane-mq:
+        condition: service_healthy
     networks:
       backend-network:
     restart: always
@@ -282,3 +330,4 @@ volumes:
   xcelerate_data:
   postgres_data:
   redis_data:
+  plane_rabbitmq_data:
