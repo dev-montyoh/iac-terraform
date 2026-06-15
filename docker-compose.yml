@@ -164,6 +164,42 @@ services:
       PORT: 80
 
   # ── Plane (이슈 트래킹) ──────────────────────────────────────────
+  plane-minio:
+    image: minio/minio:latest
+    container_name: plane-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${PLANE_MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${PLANE_MINIO_ROOT_PASSWORD}
+    volumes:
+      - plane_minio_data:/data
+    networks:
+      backend-network:
+        aliases:
+          - minio
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  plane-createbuckets:
+    image: minio/mc:latest
+    container_name: plane-createbuckets
+    depends_on:
+      plane-minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set myminio http://plane-minio:9000 ${PLANE_MINIO_ROOT_USER} ${PLANE_MINIO_ROOT_PASSWORD};
+      mc mb myminio/${PLANE_MINIO_BUCKET} --ignore-existing;
+      exit 0;
+      "
+    networks:
+      backend-network:
+    restart: on-failure
+
   plane-mq:
     image: rabbitmq:3.13.6-management-alpine
     container_name: plane-mq
@@ -225,12 +261,13 @@ services:
       CORS_ALLOWED_ORIGINS: ${PLANE_WEB_URL}
       GUNICORN_WORKERS: "2"
       FILE_SIZE_LIMIT: "5242880"
-      USE_MINIO: "0"
-      AWS_REGION: auto
-      AWS_ACCESS_KEY_ID: ${PLANE_R2_ACCESS_KEY}
-      AWS_SECRET_ACCESS_KEY: ${PLANE_R2_SECRET_KEY}
-      AWS_S3_ENDPOINT_URL: ${CLOUDFLARE_R2_END_POINT}
-      AWS_S3_BUCKET_NAME: ${PLANE_R2_BUCKET}
+      USE_MINIO: "1"
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${PLANE_MINIO_ROOT_USER}
+      AWS_SECRET_ACCESS_KEY: ${PLANE_MINIO_ROOT_PASSWORD}
+      AWS_S3_ENDPOINT_URL: http://plane-minio:9000
+      AWS_S3_BUCKET_NAME: ${PLANE_MINIO_BUCKET}
+      MINIO_ENDPOINT_URL: http://plane-minio:9000
       RABBITMQ_HOST: plane-mq
       RABBITMQ_PORT: "5672"
       RABBITMQ_USER: ${PLANE_RABBITMQ_USER}
@@ -260,12 +297,13 @@ services:
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
       SECRET_KEY: ${PLANE_SECRET_KEY}
       WEB_URL: ${PLANE_WEB_URL}
-      USE_MINIO: "0"
-      AWS_REGION: auto
-      AWS_ACCESS_KEY_ID: ${PLANE_R2_ACCESS_KEY}
-      AWS_SECRET_ACCESS_KEY: ${PLANE_R2_SECRET_KEY}
-      AWS_S3_ENDPOINT_URL: ${CLOUDFLARE_R2_END_POINT}
-      AWS_S3_BUCKET_NAME: ${PLANE_R2_BUCKET}
+      USE_MINIO: "1"
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${PLANE_MINIO_ROOT_USER}
+      AWS_SECRET_ACCESS_KEY: ${PLANE_MINIO_ROOT_PASSWORD}
+      AWS_S3_ENDPOINT_URL: http://plane-minio:9000
+      AWS_S3_BUCKET_NAME: ${PLANE_MINIO_BUCKET}
+      MINIO_ENDPOINT_URL: http://plane-minio:9000
       RABBITMQ_HOST: plane-mq
       RABBITMQ_PORT: "5672"
       RABBITMQ_USER: ${PLANE_RABBITMQ_USER}
@@ -357,7 +395,7 @@ services:
     container_name: plane-proxy
     environment:
       FILE_SIZE_LIMIT: "5242880"
-      BUCKET_NAME: ${PLANE_R2_BUCKET}
+      BUCKET_NAME: ${PLANE_MINIO_BUCKET}
       SITE_ADDRESS: ":80"
     depends_on:
       plane-web:
@@ -377,3 +415,4 @@ volumes:
   postgres_data:
   redis_data:
   plane_rabbitmq_data:
+  plane_minio_data:

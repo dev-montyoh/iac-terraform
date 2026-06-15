@@ -53,8 +53,8 @@ Terraform Cloud와 GitHub를 연동하여 실제 인프라에 배포합니다.
 - *EC2 / Lightsail / SSM / Elastic IP / Key Pair 모듈은 코드베이스에 유지하되 현재 미사용 (애플리케이션을 OCI로 이전)*
 
 ### Cloudflare
-- **DNS** (`montyoh.dev`): `root`, `www`, `ssh`, `db`, `payment`, 게임 서버(`valheim`, `corekeeper`, `palworld`), `xcelerate`, `plane` — 모두 OCI 인스턴스로 라우팅
-- **R2**: `common-static` → `static.montyoh.dev`, `plane-static` → `plane.static.montyoh.dev` (Plane 파일 첨부용)
+- **DNS** (`montyoh.dev`): `root`, `www`, `ssh`, `db`, `payment`, `xcelerate`, `plane`, 게임 서버(`valheim`, `corekeeper`, `palworld`) — 모두 OCI 인스턴스로 라우팅
+- **R2**: `common-static` → `static.montyoh.dev` (공통 정적 파일)
 - **Workers**: 서버 다운 시 점검 페이지 (`*montyoh.dev/*` 라우트)
 
 ---
@@ -107,7 +107,7 @@ OCI 인스턴스에서 실행 중인 컨테이너 서비스 목록입니다.
 | `frontend-portfolio` | 포트폴리오 프론트엔드 |
 | `frontend-payment` | 결제 프론트엔드 |
 | `xcelerate-demo` | Xcelerate 데모 앱 |
-| `plane-*` | Plane 이슈 트래킹 스택 (mq · migrator · api · worker · beat-worker · admin · space · web · proxy) |
+| `plane-*` | Plane 이슈 트래킹 스택 (minio · createbuckets · mq · migrator · api · worker · beat-worker · admin · space · web · proxy) |
 
 ---
 
