@@ -66,6 +66,8 @@ jobs:
             docker exec postgres psql -U "$DB_USERNAME" -d postgres -c \
               "GRANT ALL PRIVILEGES ON DATABASE \"$PLANE_DB_NAME\" TO \"$PLANE_DB_USERNAME\";"
 
+            docker-compose up -d --wait plane-minio
+            docker-compose up --no-deps plane-createbuckets
             docker-compose up -d plane-mq
             docker-compose up --no-deps plane-migrator
             docker-compose up -d plane-api plane-worker plane-beat-worker plane-admin plane-space plane-web plane-proxy
