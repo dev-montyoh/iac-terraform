@@ -38,6 +38,18 @@
     terraform destroy
     ```
 
+## GitHub Actions 수동 배포
+
+서비스별 수동 재배포 워크플로우가 있습니다. GitHub Actions → `Run workflow`로 실행합니다.
+
+| 워크플로우 | 설명 |
+|---|---|
+| `manual-redeploy-plane.yml` | Plane 스택 전체 재배포 (DB 생성 포함) |
+| `manual-redeploy-postgres.yml` | PostgreSQL 컨테이너 재시작 |
+| `manual-redeploy-redis.yml` | Redis 컨테이너 재시작 |
+
+---
+
 ## Git 브랜치 전략
 
 - **`master`**: 최종 릴리즈 브랜치 (운영 환경)
