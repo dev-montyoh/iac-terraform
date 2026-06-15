@@ -68,4 +68,4 @@ jobs:
 
             docker-compose up -d plane-mq
             docker-compose up --no-deps plane-migrator
-            docker-compose up -d plane-api plane-worker plane-beat-worker plane-web plane-proxy
+            docker-compose up -d plane-api plane-worker plane-beat-worker plane-admin plane-space plane-web plane-proxy
