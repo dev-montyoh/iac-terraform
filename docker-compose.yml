@@ -243,6 +243,8 @@ services:
         condition: service_healthy
     networks:
       backend-network:
+        aliases:
+          - api
     restart: always
 
   plane-worker:
@@ -316,6 +318,8 @@ services:
         condition: service_started
     networks:
       backend-network:
+        aliases:
+          - web
     restart: always
 
   plane-proxy:
@@ -324,6 +328,7 @@ services:
     environment:
       FILE_SIZE_LIMIT: "5242880"
       BUCKET_NAME: ${PLANE_R2_BUCKET}
+      SITE_ADDRESS: ":80"
     depends_on:
       plane-web:
         condition: service_started
