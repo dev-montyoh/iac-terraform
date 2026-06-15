@@ -44,9 +44,9 @@
 
 | 워크플로우 | 설명 |
 |---|---|
-| `manual-redeploy-plane.yml` | Plane 스택 전체 재배포 (DB 생성 포함) |
 | `manual-redeploy-postgres.yml` | PostgreSQL 컨테이너 재시작 |
 | `manual-redeploy-redis.yml` | Redis 컨테이너 재시작 |
+| `manual-redeploy-vikunja.yml` | Vikunja 컨테이너 재시작 |
 
 ---
 
