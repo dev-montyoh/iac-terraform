@@ -5,6 +5,9 @@
 # iac-terraform
 
 [![Multi Cloud](https://img.shields.io/badge/Cloud-OCI%20·%20AWS%20·%20Cloudflare-F80000?logo=oracle&logoColor=white)](https://github.com/dev-montyoh/iac-terraform)
+[![Redeploy Plane](https://github.com/dev-montyoh/iac-terraform/actions/workflows/manual-redeploy-plane.yml/badge.svg)](https://github.com/dev-montyoh/iac-terraform/actions/workflows/manual-redeploy-plane.yml)
+[![Redeploy Postgres](https://github.com/dev-montyoh/iac-terraform/actions/workflows/manual-redeploy-postgres.yml/badge.svg)](https://github.com/dev-montyoh/iac-terraform/actions/workflows/manual-redeploy-postgres.yml)
+[![Redeploy Redis](https://github.com/dev-montyoh/iac-terraform/actions/workflows/manual-redeploy-redis.yml/badge.svg)](https://github.com/dev-montyoh/iac-terraform/actions/workflows/manual-redeploy-redis.yml)
 
 **개인 프로젝트의 모든 클라우드 인프라를 Terraform으로 코드화하여 한 곳에서 관리**
 
@@ -50,8 +53,8 @@ Terraform Cloud와 GitHub를 연동하여 실제 인프라에 배포합니다.
 - *EC2 / Lightsail / SSM / Elastic IP / Key Pair 모듈은 코드베이스에 유지하되 현재 미사용 (애플리케이션을 OCI로 이전)*
 
 ### Cloudflare
-- **DNS** (`montyoh.dev`): `root`, `www`, `ssh`, `db`, `payment`, 게임 서버(`valheim`, `corekeeper`, `palworld`), `xcelerate` — 모두 OCI 인스턴스로 라우팅
-- **R2**: `common-static` 버킷 → `static.montyoh.dev` 커스텀 도메인 연결
+- **DNS** (`montyoh.dev`): `root`, `www`, `ssh`, `db`, `payment`, 게임 서버(`valheim`, `corekeeper`, `palworld`), `xcelerate`, `plane` — 모두 OCI 인스턴스로 라우팅
+- **R2**: `common-static` → `static.montyoh.dev`, `plane-static` → `plane.static.montyoh.dev` (Plane 파일 첨부용)
 - **Workers**: 서버 다운 시 점검 페이지 (`*montyoh.dev/*` 라우트)
 
 ---
@@ -85,6 +88,26 @@ Terraform Cloud와 GitHub를 연동하여 실제 인프라에 배포합니다.
 ├── scripts/                 # 인스턴스 User Data 셸 스크립트
 └── README.md
 ```
+
+---
+
+## Docker Compose 서비스
+
+OCI 인스턴스에서 실행 중인 컨테이너 서비스 목록입니다.
+
+| 서비스 | 설명 |
+|---|---|
+| `postgres` | 공유 PostgreSQL (백엔드 서비스 + Plane DB 호스팅) |
+| `redis` | 공유 Redis (캐시 + Plane 큐) |
+| `backend-proxy-server` | NGINX 리버스 프록시 |
+| `backend-api-server-gateway` | API 게이트웨이 |
+| `backend-api-server-auth` | 인증 서비스 |
+| `backend-api-server-content` | 콘텐츠 서비스 |
+| `backend-api-server-payment` | 결제 서비스 |
+| `frontend-portfolio` | 포트폴리오 프론트엔드 |
+| `frontend-payment` | 결제 프론트엔드 |
+| `xcelerate-demo` | Xcelerate 데모 앱 |
+| `plane-*` | Plane 이슈 트래킹 스택 (mq · migrator · api · worker · beat-worker · admin · space · web · proxy) |
 
 ---
 
