@@ -321,8 +321,6 @@ services:
   plane-proxy:
     image: makeplane/plane-proxy:stable
     container_name: plane-proxy
-    ports:
-      - "8080:80"
     environment:
       FILE_SIZE_LIMIT: "5242880"
       BUCKET_NAME: ${PLANE_R2_BUCKET}
