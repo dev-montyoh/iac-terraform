@@ -1,0 +1,70 @@
+name: manual-redeploy-plane
+
+on:
+  workflow_dispatch:
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Check out Secrets store
+        uses: actions/checkout@v5
+        with:
+          repository: 'dev-montyoh/secrets-store'
+          token: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
+          path: secrets-store
+
+      - name: Load secrets
+        uses: ./secrets-store/.github/actions/load-secrets
+        with:
+          SECRETS_STORE_ACCESS_TOKEN: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
+
+      - name: ENV to JSON
+        id: set_env_json
+        run: |
+          echo "ENV_VARS_JSON=$(echo '${{ toJSON(env) }}' | jq -c '.')" >> $GITHUB_OUTPUT
+
+      - name: Redeploy Plane to Oracle
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ssh.montyoh.dev
+          username: ubuntu
+          key_path: ./secrets-store/key/ec2-ssh-key
+          script: |
+            ENV_JSON='${{ steps.set_env_json.outputs.ENV_VARS_JSON }}'
+            eval $(echo "$ENV_JSON" | jq -r '
+              to_entries[]
+              | select((.key | startswith("GITHUB_") | not) and (.key | startswith("RUNNER_") | not))
+              | "export \(.key)=\"\(.value)\";"
+            ' | tr -d '\n')
+
+            docker ps -q --filter "name=plane-" | xargs -r docker stop
+            docker ps -a -q --filter "name=plane-" | xargs -r docker rm
+
+            cd /home/ubuntu/app
+            curl -L -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository_owner }}/iac-terraform/refs/heads/master/docker-compose.yml
+
+            # Plane 전용 유저 생성 (없을 경우에만)
+            docker exec postgres psql -U "$DB_USERNAME" -c \
+              "DO \$\$ BEGIN
+                IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname='$PLANE_DB_USERNAME') THEN
+                  CREATE USER \"$PLANE_DB_USERNAME\" WITH PASSWORD '$PLANE_DB_PASSWORD';
+                END IF;
+              END \$\$;"
+
+            # Plane 전용 DB 생성 (없을 경우에만)
+            docker exec postgres psql -U "$DB_USERNAME" -tc \
+              "SELECT 1 FROM pg_database WHERE datname='$PLANE_DB_NAME'" | grep -q 1 \
+              || docker exec postgres psql -U "$DB_USERNAME" -c \
+                "CREATE DATABASE \"$PLANE_DB_NAME\" OWNER \"$PLANE_DB_USERNAME\";"
+
+            # 권한 부여
+            docker exec postgres psql -U "$DB_USERNAME" -c \
+              "GRANT ALL PRIVILEGES ON DATABASE \"$PLANE_DB_NAME\" TO \"$PLANE_DB_USERNAME\";"
+
+            docker-compose up --no-deps plane-migrator
+            docker-compose up -d plane-api plane-worker plane-beat-worker plane-web plane-proxy
