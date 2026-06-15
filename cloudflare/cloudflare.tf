@@ -126,6 +126,17 @@ resource "cloudflare_dns_record" "montyoh_dev_xcelerate" {
   proxied = true
 }
 
+##  서브 도메인 - Plane (이슈 트래킹)
+resource "cloudflare_dns_record" "montyoh_dev_plane" {
+  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
+  name    = "plane.montyoh.dev"
+  ttl     = 1
+  type    = "A"
+  comment = "plane.montyoh.dev record"
+  content = var.oci_instance_public_ip
+  proxied = true
+}
+
 # Workers - 서버 다운 시 공사중 페이지
 resource "cloudflare_workers_script" "maintenance" {
   account_id  = var.CLOUDFLARE_ACCOUNT_ID

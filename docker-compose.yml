@@ -163,6 +163,117 @@ services:
     environment:
       PORT: 80
 
+  # ── Plane (이슈 트래킹) ──────────────────────────────────────────
+  plane-migrator:
+    image: makeplane/plane-backend:stable
+    container_name: plane-migrator
+    command: ./bin/migrate.sh
+    environment:
+      DATABASE_URL: postgresql://${PLANE_DB_USERNAME}:${PLANE_DB_PASSWORD}@postgres:5432/${PLANE_DB_NAME}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      SECRET_KEY: ${PLANE_SECRET_KEY}
+      WEB_URL: ${PLANE_WEB_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      backend-network:
+    restart: on-failure
+
+  plane-api:
+    image: makeplane/plane-backend:stable
+    container_name: plane-api
+    command: ./bin/takeoff
+    environment:
+      DATABASE_URL: postgresql://${PLANE_DB_USERNAME}:${PLANE_DB_PASSWORD}@postgres:5432/${PLANE_DB_NAME}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      SECRET_KEY: ${PLANE_SECRET_KEY}
+      WEB_URL: ${PLANE_WEB_URL}
+      CORS_ALLOWED_ORIGINS: ${PLANE_WEB_URL}
+      FILE_SIZE_LIMIT: "5242880"
+      USE_MINIO: "0"
+      AWS_REGION: auto
+      AWS_ACCESS_KEY_ID: ${PLANE_R2_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${PLANE_R2_SECRET_KEY}
+      AWS_S3_ENDPOINT_URL: ${PLANE_R2_ENDPOINT}
+      AWS_S3_BUCKET_NAME: ${PLANE_R2_BUCKET}
+      BUCKET_NAME: ${PLANE_R2_BUCKET}
+    depends_on:
+      plane-migrator:
+        condition: service_completed_successfully
+    networks:
+      backend-network:
+    restart: always
+
+  plane-worker:
+    image: makeplane/plane-backend:stable
+    container_name: plane-worker
+    command: ./bin/worker
+    environment:
+      DATABASE_URL: postgresql://${PLANE_DB_USERNAME}:${PLANE_DB_PASSWORD}@postgres:5432/${PLANE_DB_NAME}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      SECRET_KEY: ${PLANE_SECRET_KEY}
+      WEB_URL: ${PLANE_WEB_URL}
+      USE_MINIO: "0"
+      AWS_REGION: auto
+      AWS_ACCESS_KEY_ID: ${PLANE_R2_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${PLANE_R2_SECRET_KEY}
+      AWS_S3_ENDPOINT_URL: ${PLANE_R2_ENDPOINT}
+      AWS_S3_BUCKET_NAME: ${PLANE_R2_BUCKET}
+      BUCKET_NAME: ${PLANE_R2_BUCKET}
+    depends_on:
+      plane-api:
+        condition: service_started
+    networks:
+      backend-network:
+    restart: always
+
+  plane-beat-worker:
+    image: makeplane/plane-backend:stable
+    container_name: plane-beat-worker
+    command: ./bin/beat
+    environment:
+      DATABASE_URL: postgresql://${PLANE_DB_USERNAME}:${PLANE_DB_PASSWORD}@postgres:5432/${PLANE_DB_NAME}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      SECRET_KEY: ${PLANE_SECRET_KEY}
+      WEB_URL: ${PLANE_WEB_URL}
+    depends_on:
+      plane-api:
+        condition: service_started
+    networks:
+      backend-network:
+    restart: always
+
+  plane-web:
+    image: makeplane/plane-frontend:stable
+    container_name: plane-web
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${PLANE_WEB_URL}
+      NEXT_PUBLIC_WEB_BASE_URL: ${PLANE_WEB_URL}
+    depends_on:
+      plane-api:
+        condition: service_started
+    networks:
+      backend-network:
+    restart: always
+
+  plane-proxy:
+    image: makeplane/plane-proxy:stable
+    container_name: plane-proxy
+    ports:
+      - "8080:80"
+    environment:
+      FILE_SIZE_LIMIT: "5242880"
+      BUCKET_NAME: ${PLANE_R2_BUCKET}
+    depends_on:
+      plane-web:
+        condition: service_started
+      plane-api:
+        condition: service_started
+    networks:
+      backend-network:
+    restart: always
+
 networks:
   backend-network:
     driver: bridge
