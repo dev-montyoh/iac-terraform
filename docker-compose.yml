@@ -167,12 +167,12 @@ services:
   plane-minio:
     image: minio/minio:latest
     container_name: plane-minio
-    command: server /data --console-address ":9001"
+    command: server /export --console-address ":9090"
     environment:
       MINIO_ROOT_USER: ${PLANE_MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${PLANE_MINIO_ROOT_PASSWORD}
     volumes:
-      - plane_minio_data:/data
+      - plane_minio_data:/export
     networks:
       backend-network:
         aliases:
@@ -194,6 +194,7 @@ services:
       /bin/sh -c "
       mc alias set myminio http://plane-minio:9000 ${PLANE_MINIO_ROOT_USER} ${PLANE_MINIO_ROOT_PASSWORD};
       mc mb myminio/${PLANE_MINIO_BUCKET} --ignore-existing;
+      mc anonymous set download myminio/${PLANE_MINIO_BUCKET};
       exit 0;
       "
     networks:
@@ -223,19 +224,18 @@ services:
     container_name: plane-migrator
     command: ./bin/docker-entrypoint-migrator.sh
     environment:
-      POSTGRES_USER: ${PLANE_DB_USERNAME}
-      POSTGRES_PASSWORD: ${PLANE_DB_PASSWORD}
-      POSTGRES_DB: ${PLANE_DB_NAME}
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: "5432"
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      DATABASE_URL: postgresql://${PLANE_DB_USERNAME}:${PLANE_DB_PASSWORD}@postgres/${PLANE_DB_NAME}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/
       SECRET_KEY: ${PLANE_SECRET_KEY}
       WEB_URL: ${PLANE_WEB_URL}
-      RABBITMQ_HOST: plane-mq
-      RABBITMQ_PORT: "5672"
-      RABBITMQ_USER: ${PLANE_RABBITMQ_USER}
-      RABBITMQ_PASSWORD: ${PLANE_RABBITMQ_PASSWORD}
-      RABBITMQ_VHOST: ${PLANE_RABBITMQ_VHOST}
+      AMQP_URL: amqp://${PLANE_RABBITMQ_USER}:${PLANE_RABBITMQ_PASSWORD}@plane-mq:5672/${PLANE_RABBITMQ_VHOST}
+      USE_MINIO: "1"
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${PLANE_MINIO_ROOT_USER}
+      AWS_SECRET_ACCESS_KEY: ${PLANE_MINIO_ROOT_PASSWORD}
+      AWS_S3_ENDPOINT_URL: http://plane-minio:9000
+      AWS_S3_BUCKET_NAME: ${PLANE_MINIO_BUCKET}
+      MINIO_ENDPOINT_SSL: ${PLANE_MINIO_ENDPOINT_SSL}
     depends_on:
       postgres:
         condition: service_healthy
@@ -250,15 +250,12 @@ services:
     container_name: plane-api
     command: ./bin/docker-entrypoint-api.sh
     environment:
-      POSTGRES_USER: ${PLANE_DB_USERNAME}
-      POSTGRES_PASSWORD: ${PLANE_DB_PASSWORD}
-      POSTGRES_DB: ${PLANE_DB_NAME}
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: "5432"
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      DATABASE_URL: postgresql://${PLANE_DB_USERNAME}:${PLANE_DB_PASSWORD}@postgres/${PLANE_DB_NAME}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/
       SECRET_KEY: ${PLANE_SECRET_KEY}
       WEB_URL: ${PLANE_WEB_URL}
       CORS_ALLOWED_ORIGINS: ${PLANE_WEB_URL}
+      AMQP_URL: amqp://${PLANE_RABBITMQ_USER}:${PLANE_RABBITMQ_PASSWORD}@plane-mq:5672/${PLANE_RABBITMQ_VHOST}
       GUNICORN_WORKERS: "2"
       FILE_SIZE_LIMIT: "5242880"
       USE_MINIO: "1"
@@ -267,12 +264,8 @@ services:
       AWS_SECRET_ACCESS_KEY: ${PLANE_MINIO_ROOT_PASSWORD}
       AWS_S3_ENDPOINT_URL: http://plane-minio:9000
       AWS_S3_BUCKET_NAME: ${PLANE_MINIO_BUCKET}
-      MINIO_ENDPOINT_URL: ${PLANE_WEB_URL}
-      RABBITMQ_HOST: plane-mq
-      RABBITMQ_PORT: "5672"
-      RABBITMQ_USER: ${PLANE_RABBITMQ_USER}
-      RABBITMQ_PASSWORD: ${PLANE_RABBITMQ_PASSWORD}
-      RABBITMQ_VHOST: ${PLANE_RABBITMQ_VHOST}
+      MINIO_ENDPOINT_SSL: ${PLANE_MINIO_ENDPOINT_SSL}
+      LIVE_SERVER_SECRET_KEY: ${PLANE_LIVE_SERVER_SECRET_KEY}
     depends_on:
       plane-migrator:
         condition: service_completed_successfully
@@ -289,26 +282,19 @@ services:
     container_name: plane-worker
     command: ./bin/docker-entrypoint-worker.sh
     environment:
-      POSTGRES_USER: ${PLANE_DB_USERNAME}
-      POSTGRES_PASSWORD: ${PLANE_DB_PASSWORD}
-      POSTGRES_DB: ${PLANE_DB_NAME}
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: "5432"
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      DATABASE_URL: postgresql://${PLANE_DB_USERNAME}:${PLANE_DB_PASSWORD}@postgres/${PLANE_DB_NAME}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/
       SECRET_KEY: ${PLANE_SECRET_KEY}
       WEB_URL: ${PLANE_WEB_URL}
+      AMQP_URL: amqp://${PLANE_RABBITMQ_USER}:${PLANE_RABBITMQ_PASSWORD}@plane-mq:5672/${PLANE_RABBITMQ_VHOST}
       USE_MINIO: "1"
       AWS_REGION: us-east-1
       AWS_ACCESS_KEY_ID: ${PLANE_MINIO_ROOT_USER}
       AWS_SECRET_ACCESS_KEY: ${PLANE_MINIO_ROOT_PASSWORD}
       AWS_S3_ENDPOINT_URL: http://plane-minio:9000
       AWS_S3_BUCKET_NAME: ${PLANE_MINIO_BUCKET}
-      MINIO_ENDPOINT_URL: ${PLANE_WEB_URL}
-      RABBITMQ_HOST: plane-mq
-      RABBITMQ_PORT: "5672"
-      RABBITMQ_USER: ${PLANE_RABBITMQ_USER}
-      RABBITMQ_PASSWORD: ${PLANE_RABBITMQ_PASSWORD}
-      RABBITMQ_VHOST: ${PLANE_RABBITMQ_VHOST}
+      MINIO_ENDPOINT_SSL: ${PLANE_MINIO_ENDPOINT_SSL}
+      LIVE_SERVER_SECRET_KEY: ${PLANE_LIVE_SERVER_SECRET_KEY}
     depends_on:
       plane-api:
         condition: service_started
@@ -323,19 +309,12 @@ services:
     container_name: plane-beat-worker
     command: ./bin/docker-entrypoint-beat.sh
     environment:
-      POSTGRES_USER: ${PLANE_DB_USERNAME}
-      POSTGRES_PASSWORD: ${PLANE_DB_PASSWORD}
-      POSTGRES_DB: ${PLANE_DB_NAME}
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: "5432"
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      DATABASE_URL: postgresql://${PLANE_DB_USERNAME}:${PLANE_DB_PASSWORD}@postgres/${PLANE_DB_NAME}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/
       SECRET_KEY: ${PLANE_SECRET_KEY}
       WEB_URL: ${PLANE_WEB_URL}
-      RABBITMQ_HOST: plane-mq
-      RABBITMQ_PORT: "5672"
-      RABBITMQ_USER: ${PLANE_RABBITMQ_USER}
-      RABBITMQ_PASSWORD: ${PLANE_RABBITMQ_PASSWORD}
-      RABBITMQ_VHOST: ${PLANE_RABBITMQ_VHOST}
+      AMQP_URL: amqp://${PLANE_RABBITMQ_USER}:${PLANE_RABBITMQ_PASSWORD}@plane-mq:5672/${PLANE_RABBITMQ_VHOST}
+      LIVE_SERVER_SECRET_KEY: ${PLANE_LIVE_SERVER_SECRET_KEY}
     depends_on:
       plane-api:
         condition: service_started
@@ -343,6 +322,24 @@ services:
         condition: service_healthy
     networks:
       backend-network:
+    restart: always
+
+  plane-live:
+    image: makeplane/plane-live:stable
+    container_name: plane-live
+    environment:
+      API_BASE_URL: http://api:8000
+      LIVE_SERVER_SECRET_KEY: ${PLANE_LIVE_SERVER_SECRET_KEY}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+    depends_on:
+      plane-api:
+        condition: service_started
+    networks:
+      backend-network:
+        aliases:
+          - live
     restart: always
 
   plane-admin:
