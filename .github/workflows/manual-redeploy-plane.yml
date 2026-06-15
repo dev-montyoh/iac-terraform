@@ -49,7 +49,7 @@ jobs:
             curl -L -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository_owner }}/iac-terraform/refs/heads/master/docker-compose.yml
 
             # Plane 전용 유저 생성 (없을 경우에만)
-            docker exec postgres psql -U "$DB_USERNAME" -c \
+            docker exec postgres psql -U "$DB_USERNAME" -d postgres -c \
               "DO \$\$ BEGIN
                 IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname='$PLANE_DB_USERNAME') THEN
                   CREATE USER \"$PLANE_DB_USERNAME\" WITH PASSWORD '$PLANE_DB_PASSWORD';
@@ -57,13 +57,13 @@ jobs:
               END \$\$;"
 
             # Plane 전용 DB 생성 (없을 경우에만)
-            docker exec postgres psql -U "$DB_USERNAME" -tc \
+            docker exec postgres psql -U "$DB_USERNAME" -d postgres -tc \
               "SELECT 1 FROM pg_database WHERE datname='$PLANE_DB_NAME'" | grep -q 1 \
-              || docker exec postgres psql -U "$DB_USERNAME" -c \
+              || docker exec postgres psql -U "$DB_USERNAME" -d postgres -c \
                 "CREATE DATABASE \"$PLANE_DB_NAME\" OWNER \"$PLANE_DB_USERNAME\";"
 
             # 권한 부여
-            docker exec postgres psql -U "$DB_USERNAME" -c \
+            docker exec postgres psql -U "$DB_USERNAME" -d postgres -c \
               "GRANT ALL PRIVILEGES ON DATABASE \"$PLANE_DB_NAME\" TO \"$PLANE_DB_USERNAME\";"
 
             docker-compose up -d plane-mq
