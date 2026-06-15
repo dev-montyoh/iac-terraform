@@ -307,6 +307,36 @@ services:
       backend-network:
     restart: always
 
+  plane-admin:
+    image: makeplane/plane-admin:stable
+    container_name: plane-admin
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${PLANE_WEB_URL}
+      NEXT_PUBLIC_ADMIN_BASE_URL: ${PLANE_WEB_URL}
+    depends_on:
+      plane-api:
+        condition: service_started
+    networks:
+      backend-network:
+        aliases:
+          - admin
+    restart: always
+
+  plane-space:
+    image: makeplane/plane-space:stable
+    container_name: plane-space
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${PLANE_WEB_URL}
+      NEXT_PUBLIC_SPACE_BASE_URL: ${PLANE_WEB_URL}
+    depends_on:
+      plane-api:
+        condition: service_started
+    networks:
+      backend-network:
+        aliases:
+          - space
+    restart: always
+
   plane-web:
     image: makeplane/plane-frontend:stable
     container_name: plane-web
