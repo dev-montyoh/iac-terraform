@@ -29,50 +29,49 @@ jobs:
           echo "ENV_VARS_JSON=$(echo '${{ toJSON(env) }}' | jq -c '.')" >> $GITHUB_OUTPUT
 
       - name: Backup Vikunja before deploy
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ssh.montyoh.dev
-          username: ubuntu
-          key_path: ./secrets-store/key/ec2-ssh-key
-          script: |
-            ENV_JSON='${{ steps.set_env_json.outputs.ENV_VARS_JSON }}'
-            eval $(echo "$ENV_JSON" | jq -r '
-              to_entries[]
-              | select((.key | startswith("GITHUB_") | not) and (.key | startswith("RUNNER_") | not))
-              | "export \(.key)=\"\(.value)\";"
-            ' | tr -d '\n')
+        run: |
+          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+          BACKUP_FILE="/tmp/vikunja-backup-$TIMESTAMP.zip"
 
-            TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-            BACKUP_FILE="/tmp/vikunja-backup-$TIMESTAMP.zip"
+          echo "[$(date)] Getting JWT token..."
+          JWT=$(curl -s -X POST "https://vikunja.montyoh.dev/api/v1/login" \
+            -H "Content-Type: application/json" \
+            -d "{\"username\":\"$VIKUNJA_BACKUP_USERNAME\",\"password\":\"$VIKUNJA_BACKUP_PASSWORD\"}" \
+            | jq -r '.token')
 
-            echo "[$(date)] Requesting Vikunja export..."
-            curl -s -X POST "https://vikunja.montyoh.dev/api/v1/user/export/request" \
-              -H "Authorization: Bearer $VIKUNJA_API_TOKEN"
+          echo "[$(date)] Requesting export..."
+          curl -s -X POST "https://vikunja.montyoh.dev/api/v1/user/export/request" \
+            -H "Authorization: Bearer $JWT" \
+            -H "Content-Type: application/json" \
+            -d "{\"password\":\"$VIKUNJA_BACKUP_PASSWORD\"}"
 
-            echo "[$(date)] Waiting for export to be ready..."
-            for i in $(seq 1 12); do
-              sleep 10
-              HTTP_CODE=$(curl -s -o "$BACKUP_FILE" -w "%{http_code}" \
-                "https://vikunja.montyoh.dev/api/v1/user/export/download" \
-                -H "Authorization: Bearer $VIKUNJA_API_TOKEN")
-              if [ "$HTTP_CODE" = "200" ]; then
-                echo "[$(date)] Export ready."
-                break
-              fi
-              echo "Not ready yet ($i/12), retrying..."
-              rm -f "$BACKUP_FILE"
-            done
-
-            echo "[$(date)] Uploading to R2..."
-            AWS_ACCESS_KEY_ID=$VIKUNJA_R2_ACCESS_KEY \
-            AWS_SECRET_ACCESS_KEY=$VIKUNJA_R2_SECRET_KEY \
-            aws s3 cp "$BACKUP_FILE" \
-              "s3://$VIKUNJA_R2_BUCKET/backup/vikunja-backup-$TIMESTAMP.zip" \
-              --endpoint-url "$CLOUDFLARE_R2_END_POINT" \
-              --region auto
-
+          echo "[$(date)] Waiting for export to be ready..."
+          for i in $(seq 1 12); do
+            sleep 10
+            HTTP_CODE=$(curl -s -X POST "https://vikunja.montyoh.dev/api/v1/user/export/download" \
+              -H "Authorization: Bearer $JWT" \
+              -H "Content-Type: application/json" \
+              -d "{\"password\":\"$VIKUNJA_BACKUP_PASSWORD\"}" \
+              -o "$BACKUP_FILE" \
+              -w "%{http_code}")
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "[$(date)] Export ready."
+              break
+            fi
+            echo "Not ready yet ($i/12), retrying..."
             rm -f "$BACKUP_FILE"
-            echo "[$(date)] Backup complete: vikunja-backup-$TIMESTAMP.zip"
+          done
+
+          echo "[$(date)] Uploading to R2..."
+          AWS_ACCESS_KEY_ID=$VIKUNJA_R2_ACCESS_KEY \
+          AWS_SECRET_ACCESS_KEY=$VIKUNJA_R2_SECRET_KEY \
+          aws s3 cp "$BACKUP_FILE" \
+            "s3://$VIKUNJA_R2_BUCKET/backup/vikunja-backup-$TIMESTAMP.zip" \
+            --endpoint-url "$CLOUDFLARE_R2_END_POINT" \
+            --region auto
+
+          rm -f "$BACKUP_FILE"
+          echo "[$(date)] Backup complete: vikunja-backup-$TIMESTAMP.zip"
 
       - name: Redeploy Vikunja to Oracle
         uses: appleboy/ssh-action@v1
@@ -140,7 +139,8 @@ jobs:
 
             # 백업 스크립트에서 사용할 env 파일 (매 배포마다 최신 값으로 갱신)
             cat > /home/ubuntu/scripts/vikunja-backup.env << EOF
-            VIKUNJA_API_TOKEN=$VIKUNJA_API_TOKEN
+            VIKUNJA_BACKUP_USERNAME=$VIKUNJA_BACKUP_USERNAME
+            VIKUNJA_BACKUP_PASSWORD=$VIKUNJA_BACKUP_PASSWORD
             VIKUNJA_R2_ACCESS_KEY=$VIKUNJA_R2_ACCESS_KEY
             VIKUNJA_R2_SECRET_KEY=$VIKUNJA_R2_SECRET_KEY
             VIKUNJA_R2_BUCKET=$VIKUNJA_R2_BUCKET
@@ -157,15 +157,26 @@ jobs:
             TIMESTAMP=$(date +%Y%m%d_%H%M%S)
             BACKUP_FILE="/tmp/vikunja-backup-$TIMESTAMP.zip"
 
-            echo "[$(date)] Requesting Vikunja export..."
+            echo "[$(date)] Getting JWT token..."
+            JWT=$(curl -s -X POST "https://vikunja.montyoh.dev/api/v1/login" \
+              -H "Content-Type: application/json" \
+              -d "{\"username\":\"$VIKUNJA_BACKUP_USERNAME\",\"password\":\"$VIKUNJA_BACKUP_PASSWORD\"}" \
+              | jq -r '.token')
+
+            echo "[$(date)] Requesting export..."
             curl -s -X POST "https://vikunja.montyoh.dev/api/v1/user/export/request" \
-              -H "Authorization: Bearer $VIKUNJA_API_TOKEN"
+              -H "Authorization: Bearer $JWT" \
+              -H "Content-Type: application/json" \
+              -d "{\"password\":\"$VIKUNJA_BACKUP_PASSWORD\"}"
 
             for i in $(seq 1 12); do
               sleep 10
-              HTTP_CODE=$(curl -s -o "$BACKUP_FILE" -w "%{http_code}" \
-                "https://vikunja.montyoh.dev/api/v1/user/export/download" \
-                -H "Authorization: Bearer $VIKUNJA_API_TOKEN")
+              HTTP_CODE=$(curl -s -X POST "https://vikunja.montyoh.dev/api/v1/user/export/download" \
+                -H "Authorization: Bearer $JWT" \
+                -H "Content-Type: application/json" \
+                -d "{\"password\":\"$VIKUNJA_BACKUP_PASSWORD\"}" \
+                -o "$BACKUP_FILE" \
+                -w "%{http_code}")
               if [ "$HTTP_CODE" = "200" ]; then
                 echo "[$(date)] Export ready."
                 break
