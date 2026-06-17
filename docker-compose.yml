@@ -197,7 +197,7 @@ services:
   vikunja-mcp:
     image: supercorp/supergateway
     container_name: vikunja-mcp
-    command: ["--stdio", "npx -y vikunja-mcp", "--port", "8000", "--baseUrl", "http://vikunja-mcp:8000"]
+    command: ["--stdio", "npx -y vikunja-mcp", "--port", "80", "--baseUrl", "http://vikunja-mcp"]
     environment:
       VIKUNJA_API_BASE: http://vikunja:3456
       VIKUNJA_API_TOKEN: ${VIKUNJA_API_TOKEN}
