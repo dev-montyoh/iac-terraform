@@ -42,3 +42,4 @@ terraform.rc
 # IntelliJ
 *.iml
 *.idea.DS_Store
+*.idea
