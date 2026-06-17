@@ -87,8 +87,8 @@ jobs:
               | "export \(.key)=\"\(.value)\";"
             ' | tr -d '\n')
 
-            docker ps -q --filter "name=vikunja" | xargs -r docker stop
-            docker ps -a -q --filter "name=vikunja" | xargs -r docker rm
+            docker stop vikunja || true
+            docker rm vikunja || true
 
             cd /home/ubuntu/app
             curl -L -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository_owner }}/iac-terraform/refs/heads/master/docker-compose.yml
