@@ -1,4 +1,4 @@
-name: manual-redeploy-mcp-vikunja
+name: manual-redeploy-vikunja-mcp
 
 on:
   workflow_dispatch:
@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "ENV_VARS_JSON=$(echo '${{ toJSON(env) }}' | jq -c '.')" >> $GITHUB_OUTPUT
 
-      - name: Redeploy mcp-vikunja to Oracle
+      - name: Redeploy vikunja-mcp to Oracle
         uses: appleboy/ssh-action@v1
         with:
           host: ssh.montyoh.dev
@@ -42,10 +42,10 @@ jobs:
               | "export \(.key)=\"\(.value)\";"
             ' | tr -d '\n')
 
-            docker ps -q --filter "name=mcp-vikunja" | xargs -r docker stop
-            docker ps -a -q --filter "name=mcp-vikunja" | xargs -r docker rm
+            docker ps -q --filter "name=vikunja-mcp" | xargs -r docker stop
+            docker ps -a -q --filter "name=vikunja-mcp" | xargs -r docker rm
 
             cd /home/ubuntu/app
             curl -L -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository_owner }}/iac-terraform/refs/heads/master/docker-compose.yml
 
-            docker-compose up -d mcp-vikunja
+            docker-compose up -d vikunja-mcp

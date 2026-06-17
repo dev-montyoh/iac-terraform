@@ -194,21 +194,21 @@ services:
     restart: always
 
   # ── Vikunja MCP (supergateway + vikunja-mcp, stdio→SSE 변환) ────
-  mcp-vikunja:
+  vikunja-mcp:
     image: node:22-alpine
-    container_name: mcp-vikunja
+    container_name: vikunja-mcp
     command: >
       sh -c "npx -y supergateway
         --stdio 'npx -y vikunja-mcp'
         --port 8000
-        --baseUrl http://mcp-vikunja:8000"
+        --baseUrl http://vikunja-mcp:8000"
     environment:
       VIKUNJA_API_BASE: http://vikunja:3456
       VIKUNJA_API_TOKEN: ${VIKUNJA_API_TOKEN}
     networks:
       backend-network:
         aliases:
-          - mcp-vikunja
+          - vikunja-mcp
     depends_on:
       - vikunja
     restart: always
