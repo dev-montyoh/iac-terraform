@@ -103,6 +103,25 @@ services:
       CLOUDFLARE_R2_END_POINT: ${CLOUDFLARE_R2_END_POINT}
       CLOUDFLARE_R2_BUCKET_NAME: ${CLOUDFLARE_R2_BUCKET_NAME}
 
+  # user
+  backend-api-server-user:
+    image: ghcr.io/dev-montyoh/backend-api-server-user:latest
+    container_name: backend-api-server-user
+    networks:
+      backend-network:
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 80
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      ADMIN_LOGIN_ID: ${ADMIN_LOGIN_ID}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+
   # payment
   backend-api-server-payment:
     image: ghcr.io/dev-montyoh/backend-api-server-payment:latest
