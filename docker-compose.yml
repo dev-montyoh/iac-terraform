@@ -216,9 +216,9 @@ services:
   vikunja-mcp:
     image: supercorp/supergateway
     container_name: vikunja-mcp
-    command: ["--stdio", "npx -y vikunja-mcp", "--port", "80", "--baseUrl", "https://www.montyoh.dev/api/mcp/vikunja"]
+    command: ["--stdio", "npx -y @0xk3vin/vikunja-mcp", "--port", "80", "--baseUrl", "https://www.montyoh.dev/api/mcp/vikunja"]
     environment:
-      VIKUNJA_API_BASE: http://vikunja:3456
+      VIKUNJA_URL: http://vikunja:3456
       VIKUNJA_API_TOKEN: ${VIKUNJA_API_TOKEN}
     networks:
       backend-network:
