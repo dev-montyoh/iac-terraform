@@ -30,23 +30,21 @@ jobs:
 
       - name: Redeploy vikunja-mcp to Oracle
         uses: appleboy/ssh-action@v1
+        env:
+          DOCKER_REGISTRY_ACCESS_TOKEN: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
+          DOCKER_REGISTRY_USERNAME: ${{ github.repository_owner }}
         with:
           host: ssh.montyoh.dev
           username: ubuntu
           key_path: ./secrets-store/key/ec2-ssh-key
+          envs: DOCKER_REGISTRY_ACCESS_TOKEN,DOCKER_REGISTRY_USERNAME
           script: |
-            ENV_JSON='${{ steps.set_env_json.outputs.ENV_VARS_JSON }}'
-            eval $(echo "$ENV_JSON" | jq -r '
-              to_entries[]
-              | select((.key | startswith("GITHUB_") | not) and (.key | startswith("RUNNER_") | not))
-              | "export \(.key)=\"\(.value)\";"
-            ' | tr -d '\n')
-
             docker ps -q --filter "name=vikunja-mcp" | xargs -r docker stop
             docker ps -a -q --filter "name=vikunja-mcp" | xargs -r docker rm
             docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/vikunja-mcp:latest | xargs -r docker rmi -f
 
+            echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
             cd /home/ubuntu/app
-            curl -L -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository_owner }}/iac-terraform/refs/heads/master/docker-compose.yml
-
+            curl -L -o docker-compose.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.yml
+            docker-compose pull vikunja-mcp
             docker-compose up -d vikunja-mcp
