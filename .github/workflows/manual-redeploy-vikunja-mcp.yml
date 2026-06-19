@@ -47,4 +47,4 @@ jobs:
             cd /home/ubuntu/app
             curl -L -o docker-compose.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.yml
             docker-compose pull vikunja-mcp
-            docker-compose up -d vikunja-mcp
+            docker-compose up -d --no-recreate vikunja-mcp
