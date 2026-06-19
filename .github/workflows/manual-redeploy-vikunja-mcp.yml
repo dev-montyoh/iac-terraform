@@ -44,7 +44,7 @@ jobs:
 
             docker ps -q --filter "name=vikunja-mcp" | xargs -r docker stop
             docker ps -a -q --filter "name=vikunja-mcp" | xargs -r docker rm
-            docker images -q ghcr.io/${{ github.repository_owner }}/vikunja-mcp:latest | xargs -r docker rmi -f
+            docker images -q ghcr.io/$DOCKER_REGISTRY_USERNAME/vikunja-mcp:latest | xargs -r docker rmi -f
 
             cd /home/ubuntu/app
             curl -L -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository_owner }}/iac-terraform/refs/heads/master/docker-compose.yml
