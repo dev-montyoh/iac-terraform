@@ -212,14 +212,14 @@ services:
         condition: service_healthy
     restart: always
 
-  # ── Vikunja MCP (supergateway + vikunja-mcp, stdio→SSE 변환) ────
+  # ── Vikunja MCP (커스텀 MCP 서버 + supergateway 번들, stdio→SSE 변환) ────
   vikunja-mcp:
-    image: supercorp/supergateway
+    image: ghcr.io/dev-montyoh/vikunja-mcp:latest
     container_name: vikunja-mcp
-    command: ["--stdio", "npx -y @0xk3vin/vikunja-mcp", "--port", "80", "--baseUrl", "https://www.montyoh.dev/api/mcp/vikunja"]
     environment:
-      VIKUNJA_URL: http://vikunja:3456
-      VIKUNJA_API_TOKEN: ${VIKUNJA_API_TOKEN}
+      VIKUNJA_URL: http://vikunja:3456/api/v1
+      VIKUNJA_TOKEN: ${VIKUNJA_API_TOKEN}
+      BASE_URL: https://www.montyoh.dev/api/mcp/vikunja
     networks:
       backend-network:
         aliases:
