@@ -228,6 +228,38 @@ services:
       - vikunja
     restart: always
 
+  # ── AFFiNE (Notion + Miro 대체 self-hosted 워크스페이스) ─────────
+  affine:
+    image: ghcr.io/toeverything/affine:stable
+    container_name: affine
+    environment:
+      AFFINE_SERVER_EXTERNAL_URL: https://affine.montyoh.dev
+      AFFINE_SERVER_HTTPS: "true"
+      AFFINE_SERVER_HOST: affine.montyoh.dev
+      AFFINE_SERVER_PORT: 3010
+      # 기존 PostgreSQL 재사용 (affine 전용 DB/유저는 배포 워크플로에서 생성)
+      DATABASE_URL: postgresql://${AFFINE_DB_USERNAME}:${AFFINE_DB_PASSWORD}@postgres:5432/${AFFINE_DB_NAME}
+      # 기존 Redis 재사용
+      REDIS_SERVER_HOST: redis
+      REDIS_SERVER_PORT: 6379
+      REDIS_SERVER_PASSWORD: ${REDIS_PASSWORD}
+      # pgvector 미설치 상태 → AI/풀텍스트 인덱서 비활성화 (추후 활성화 검토)
+      AFFINE_INDEXER_ENABLED: "false"
+    volumes:
+      # 파일 저장소: 우선 로컬 스토리지로 시작 (R2 호환성은 추후 검토)
+      - affine_data:/root/.affine/storage
+      - affine_config:/root/.affine/config
+    networks:
+      backend-network:
+        aliases:
+          - affine
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: always
+
 networks:
   backend-network:
     driver: bridge
@@ -236,3 +268,5 @@ volumes:
   xcelerate_data:
   postgres_data:
   redis_data:
+  affine_data:
+  affine_config:
