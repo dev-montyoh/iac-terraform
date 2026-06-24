@@ -228,6 +228,28 @@ services:
       - vikunja
     restart: always
 
+  # ── AFFiNE DB 마이그레이션 (서버 기동 전 1회 실행 후 종료) ────────
+  affine_migration:
+    image: ghcr.io/toeverything/affine:stable
+    container_name: affine_migration
+    command: ["sh", "-c", "node ./scripts/self-host-predeploy"]
+    environment:
+      DATABASE_URL: postgresql://${AFFINE_DB_USERNAME}:${AFFINE_DB_PASSWORD}@postgres:5432/${AFFINE_DB_NAME}
+      REDIS_SERVER_HOST: redis
+      REDIS_SERVER_PORT: 6379
+      REDIS_SERVER_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - affine_data:/root/.affine/storage
+      - affine_config:/root/.affine/config
+    networks:
+      backend-network:
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: "no"
+
   # ── AFFiNE (Notion + Miro 대체 self-hosted 워크스페이스) ─────────
   affine:
     image: ghcr.io/toeverything/affine:stable
@@ -258,6 +280,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      affine_migration:
+        condition: service_completed_successfully
     restart: always
 
 networks:
