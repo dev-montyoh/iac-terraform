@@ -55,7 +55,7 @@ Terraform Cloud와 GitHub를 연동하여 실제 인프라에 배포합니다.
 
 ### Cloudflare
 - **DNS** (`montyoh.dev`): `root`, `www`, `ssh`, `db`, `payment`, `xcelerate`, `vikunja`, `affine`, 게임 서버(`valheim`, `corekeeper`, `palworld`) — 모두 OCI 인스턴스로 라우팅
-- **R2**: `common-static` → `static.montyoh.dev` (공통 정적 파일), `vikunja-static` → `vikunja.static.montyoh.dev` (Vikunja 파일 첨부), `affine-static` → `affine.static.montyoh.dev` (AFFiNE 파일 첨부)
+- **R2**: `common-static` → `static.montyoh.dev` (공통 정적 파일), `vikunja-static` → `vikunja.static.montyoh.dev` (Vikunja 파일 첨부), `affine-static` → `affine.static.montyoh.dev` (AFFiNE 파일 첨부), `obsidian-vault` (Obsidian Vault 동기화 — 비공개, S3 API 전용)
 - **Workers**: 서버 다운 시 점검 페이지 (`*montyoh.dev/*` 라우트)
 
 ---
