@@ -1,3 +1,9 @@
+# macOS
+.DS_Store
+
+# MCP tooling
+.playwright-mcp/
+
 # Local .terraform directories
 **/.terraform/*
 

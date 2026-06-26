@@ -33,8 +33,9 @@ resource "cloudflare_r2_bucket_cors" "cloudflare_r2_bucket_cors" {
   depends_on = [cloudflare_r2_bucket.cloudflare_r2_bucket]
 }
 
-# R2 커스텀 도메인 연결
+# R2 커스텀 도메인 연결 (domain 지정 시에만 생성)
 resource "cloudflare_r2_custom_domain" "cloudflare_r2_custom_domain" {
+  count       = var.domain != "" ? 1 : 0
   account_id  = var.CLOUDFLARE_ACCOUNT_ID
   bucket_name = cloudflare_r2_bucket.cloudflare_r2_bucket.name
   domain      = var.domain
