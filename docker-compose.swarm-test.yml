@@ -1,0 +1,55 @@
+# ─────────────────────────────────────────────────────────────
+# Docker Swarm 테스트용 스택 (기존 docker-compose.yml과 완전 분리)
+#
+#   배포:  docker stack deploy -c docker-compose.swarm-test.yml swarm-test
+#   확인:  docker stack services swarm-test
+#   제거:  docker stack rm swarm-test
+#
+# 대상: frontend-payment (stateless, DB/Redis 의존 없음) — Swarm 핵심 기능 학습용
+#   · replicas          : 다중 인스턴스
+#   · update_config     : start-first 롤링 업데이트 (신규 뜬 뒤 기존 제거 → 무중단)
+#   · restart_policy    : 컨테이너 죽으면 자동 재스케줄
+#   · healthcheck       : 비정상 태스크 감지 → 교체
+#
+# 외부 노출 경로:
+#   사용자 →(https:443)→ Cloudflare(swarm-test.montyoh.dev)
+#         →(http:80)→ backend-proxy-server(nginx)
+#         →(http)→ host.docker.internal:8091  ← 이 스택이 publish한 호스트 포트
+#
+#   ※ 8091은 "호스트 내부"에서 nginx가 찌르는 용도라 OCI 보안그룹엔 열지 않음.
+#     외부 진입은 오직 Cloudflare→80→nginx 경로뿐.
+# ─────────────────────────────────────────────────────────────
+version: "3.9"
+
+services:
+  frontend-payment-swarm:
+    image: ghcr.io/dev-montyoh/frontend-payment:latest
+    ports:
+      # swarm ingress 메시로 호스트 8091 → 컨테이너 80 publish
+      - target: 80
+        published: 8091
+        protocol: tcp
+        mode: ingress
+    environment:
+      PORT: 80
+    # ※ 아래 healthcheck 명령은 frontend-payment 이미지 안에 wget이 있어야 동작함.
+    #    (없으면 curl 또는 node 등 이미지에 맞는 명령으로 교체 필요)
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:80/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    deploy:
+      replicas: 2
+      update_config:
+        order: start-first   # 신규 태스크 먼저 뜬 뒤 기존 제거 (무중단 롤링)
+        parallelism: 1
+        delay: 5s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+# networks 미지정 → stack이 swarm-test_default (overlay) 자동 생성.
+# 외부 진입은 publish된 호스트 포트(8091)로만 이뤄지므로 별도 네트워크 정의 불필요.
