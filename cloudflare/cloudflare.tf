@@ -33,13 +33,6 @@ module "r2_affine" {
   zone_id               = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
 }
 
-# R2 버킷 - Obsidian Vault 동기화 (비공개, Remotely Save S3 API 전용)
-module "r2_obsidian" {
-  source                = "./r2"
-  CLOUDFLARE_ACCOUNT_ID = var.CLOUDFLARE_ACCOUNT_ID
-  bucket_name           = "obsidian-vault"
-}
-
 # montyoh.dev 도메인 설정
 ##  루트 도메인 - 웹 접속
 resource "cloudflare_dns_record" "montyoh_dev_root" {
