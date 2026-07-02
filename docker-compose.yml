@@ -47,6 +47,9 @@ services:
       - "80:80"
     networks:
       backend-network:
+    # Swarm 테스트 스택이 호스트에 publish한 포트(8091)로 nginx가 접근하기 위함
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: always
 
   # gateway

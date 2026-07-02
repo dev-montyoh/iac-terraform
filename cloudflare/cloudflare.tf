@@ -33,13 +33,6 @@ module "r2_affine" {
   zone_id               = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
 }
 
-# R2 버킷 - Obsidian Vault 동기화 (비공개, Remotely Save S3 API 전용)
-module "r2_obsidian" {
-  source                = "./r2"
-  CLOUDFLARE_ACCOUNT_ID = var.CLOUDFLARE_ACCOUNT_ID
-  bucket_name           = "obsidian-vault"
-}
-
 # montyoh.dev 도메인 설정
 ##  루트 도메인 - 웹 접속
 resource "cloudflare_dns_record" "montyoh_dev_root" {
@@ -169,6 +162,17 @@ resource "cloudflare_dns_record" "montyoh_dev_affine" {
   ttl     = 1
   type    = "A"
   comment = "affine.montyoh.dev record"
+  content = var.oci_instance_public_ip
+  proxied = true
+}
+
+##  서브 도메인 - Docker Swarm 테스트 (backend-proxy-server 경유)
+resource "cloudflare_dns_record" "montyoh_dev_swarm_test" {
+  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
+  name    = "swarm-test.montyoh.dev"
+  ttl     = 1
+  type    = "A"
+  comment = "swarm-test.montyoh.dev record"
   content = var.oci_instance_public_ip
   proxied = true
 }
