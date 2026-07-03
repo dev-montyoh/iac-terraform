@@ -1,0 +1,108 @@
+# ─────────────────────────────────────────────────────────────
+# Docker Swarm — application-services 스택
+#
+#   배포:  docker stack deploy --with-registry-auth -c docker-compose.swarm.yml application-services
+#   확인:  docker stack services application-services
+#   제거:  docker stack rm application-services
+#
+# 목적: 기존 compose 세트(bridge)와 "병렬"로 동일 서비스군을 swarm에 올려 검증 후,
+#       진입점(nginx upstream)을 이쪽으로 넘기는 블루-그린 전환.
+#
+# 설계 요점
+#   1) 한 스택 = 한 네트워크(application-services_default, overlay 자동 생성).
+#      → 서비스들끼리 기존과 동일한 이름(backend-api-server-auth 등)으로 통신.
+#      → 게이트웨이 라우팅 설정(application-prod.properties의 http://backend-api-server-auth 등) 무수정.
+#   2) postgres/redis는 이 스택에 없음(bridge의 기존 compose 유지). 대신 이미 host에
+#      5432/6379가 publish돼 있으므로, extra_hosts로 "postgres"/"redis" 이름을
+#      host-gateway(=호스트)로 매핑 → 기존 env(DB_URL, REDIS_HOST: redis) 그대로 사용.
+#      ※ 전제: DB_URL이 호스트명으로 "postgres"를 사용(기존 compose 서비스명과 동일). 다르면 조정 필요.
+#   3) 게이트웨이만 host 포트(8081) publish → 검증 및 커토버 시 nginx가 이 포트로 라우팅.
+#      (기존 compose 게이트웨이는 포트 미publish라 충돌 없음)
+#   4) container_name / depends_on / restart 는 swarm에서 무시·미지원 → deploy 블록으로 대체.
+#
+# TODO: 각 서비스 healthcheck는 헬스 엔드포인트(예: actuator/health) 확인 후 추가 예정.
+#       (잘못된 healthcheck는 태스크 crash-loop을 유발하므로 확인 전까지 미정의)
+# ─────────────────────────────────────────────────────────────
+version: "3.9"
+
+x-deploy-defaults: &deploy-defaults
+  replicas: 1
+  update_config:
+    order: start-first
+    parallelism: 1
+    delay: 5s
+  restart_policy:
+    condition: on-failure
+    delay: 5s
+    max_attempts: 3
+
+services:
+  # gateway — 진입점. nginx가 이 포트(8081)로 라우팅(커토버 대상)
+  backend-api-server-gateway:
+    image: ghcr.io/dev-montyoh/backend-api-server-gateway:latest
+    ports:
+      - target: 80
+        published: 8081
+        protocol: tcp
+        mode: ingress
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      MCP_JWT_SECRET_KEY: ${MCP_JWT_SECRET_KEY}
+      SERVER_PORT: 80
+    deploy: *deploy-defaults
+
+  # auth — postgres + redis 사용 → 두 이름을 호스트로 별칭
+  backend-api-server-auth:
+    image: ghcr.io/dev-montyoh/backend-api-server-auth:latest
+    extra_hosts:
+      - "postgres:host-gateway"
+      - "redis:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 80
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      MCP_JWT_SECRET_KEY: ${MCP_JWT_SECRET_KEY}
+    deploy: *deploy-defaults
+
+  # user — postgres 사용
+  backend-api-server-user:
+    image: ghcr.io/dev-montyoh/backend-api-server-user:latest
+    extra_hosts:
+      - "postgres:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 80
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      ADMIN_LOGIN_ID: ${ADMIN_LOGIN_ID}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    deploy: *deploy-defaults
+
+  # payment — postgres 사용
+  backend-api-server-payment:
+    image: ghcr.io/dev-montyoh/backend-api-server-payment:latest
+    extra_hosts:
+      - "postgres:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 80
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      PAYMENT_INICIS_SIGN_KEY: ${PAYMENT_INICIS_SIGN_KEY}
+      PAYMENT_INICIS_MID: ${PAYMENT_INICIS_MID}
+      PAYMENT_INICIS_INIAPIKEY: ${PAYMENT_INICIS_INIAPIKEY}
+      PAYMENT_NICEPAY_MERCHANT_KEY: ${PAYMENT_NICEPAY_MERCHANT_KEY}
+      PAYMENT_NICEPAY_MID: ${PAYMENT_NICEPAY_MID}
+    deploy: *deploy-defaults
+
+# networks 미지정 → application-services_default (overlay) 자동 생성, 전 서비스 자동 소속.
+# postgres/redis만 예외로 extra_hosts(host-gateway)를 통해 호스트의 5432/6379로 접근.
