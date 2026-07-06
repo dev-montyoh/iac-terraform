@@ -67,5 +67,5 @@ jobs:
             echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
 
             cd /home/ubuntu/app
-            curl -L -o docker-compose.swarm.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.swarm.yml
-            docker stack deploy --with-registry-auth -c docker-compose.swarm.yml application-services
+            curl -L -o docker-compose.stack.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.stack.yml
+            docker stack deploy --with-registry-auth -c docker-compose.stack.yml application-services
