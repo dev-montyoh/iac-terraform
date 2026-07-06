@@ -104,5 +104,16 @@ services:
       PAYMENT_NICEPAY_MID: ${PAYMENT_NICEPAY_MID}
     deploy: *deploy-defaults
 
+  # frontend-portfolio — redis 사용
+  frontend-portfolio:
+    image: ghcr.io/dev-montyoh/frontend-portfolio:latest
+    extra_hosts:
+      - "redis:host-gateway"
+    environment:
+      PORT: 80
+      REDIS_URL: redis://redis:6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    deploy: *deploy-defaults
+
 # networks 미지정 → application-services_default (overlay) 자동 생성, 전 서비스 자동 소속.
 # postgres/redis만 예외로 extra_hosts(host-gateway)를 통해 호스트의 5432/6379로 접근.
