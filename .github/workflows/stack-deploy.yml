@@ -1,0 +1,71 @@
+name: Stack Deploy (reusable)
+
+# 다른 레포에서 호출해서 application-services 스택을 배포하는 재사용 워크플로.
+#
+# 호출 예시:
+#   jobs:
+#     deploy:
+#       needs: build
+#       uses: dev-montyoh/iac-terraform/.github/workflows/stack-deploy.yml@master
+#       secrets:
+#         SECRETS_STORE_ACCESS_TOKEN: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
+
+on:
+  workflow_call:
+    secrets:
+      SECRETS_STORE_ACCESS_TOKEN:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 외부 private secrets store 접근
+      - name: Check out Secrets store
+        uses: actions/checkout@v5
+        with:
+          repository: 'dev-montyoh/secrets-store'
+          token: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
+          path: secrets-store
+
+      # 외부 private secrets store 로드
+      - name: Load secrets
+        uses: ./secrets-store/.github/actions/load-secrets
+        with:
+          SECRETS_STORE_ACCESS_TOKEN: ${{ secrets.SECRETS_STORE_ACCESS_TOKEN }}
+
+      # 모든 환경 변수를 JSON 문자열로 변환하여 변수에 저장
+      - name: ENV to JSON
+        id: set_env_json
+        run: |
+          echo "ENV_VARS_JSON=$(echo '${{ toJSON(env) }}' | jq -c '.')" >> $GITHUB_OUTPUT
+
+      # 스택 배포
+      - name: Deploy stack
+        uses: appleboy/ssh-action@v1
+        env:
+          DOCKER_REGISTRY_ACCESS_TOKEN: ${{ env.DOCKER_REGISTRY_ACCESS_TOKEN }}
+          DOCKER_REGISTRY_USERNAME: ${{ github.repository_owner }}
+        with:
+          host: ssh.montyoh.dev
+          username: ubuntu
+          key_path: ./secrets-store/key/ec2-ssh-key
+          envs: DOCKER_REGISTRY_ACCESS_TOKEN,DOCKER_REGISTRY_USERNAME
+          script: |
+            ENV_JSON='${{ steps.set_env_json.outputs.ENV_VARS_JSON }}'
+            eval $(echo "$ENV_JSON" | jq -r '
+              to_entries[]
+              | select((.key | startswith("GITHUB_") | not) and (.key | startswith("RUNNER_") | not))
+              | "export \(.key)=\"\(.value)\";"
+            ' | tr -d '\n')
+
+            if [ "$(docker info --format '{{.Swarm.LocalNodeState}}')" != "active" ]; then
+              docker swarm init --advertise-addr "$(hostname -I | awk '{print $1}')"
+            fi
+
+            echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u $DOCKER_REGISTRY_USERNAME --password-stdin
+
+            cd /home/ubuntu/app
+            curl -L -o docker-compose.swarm.yml https://raw.githubusercontent.com/$DOCKER_REGISTRY_USERNAME/iac-terraform/refs/heads/master/docker-compose.swarm.yml
+            docker stack deploy --with-registry-auth -c docker-compose.swarm.yml application-services
