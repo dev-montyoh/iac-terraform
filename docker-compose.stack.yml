@@ -12,7 +12,8 @@ x-deploy-defaults: &deploy-defaults
     max_attempts: 3
 
 services:
-  # 프론트
+  #   frontend
+  ##  포트폴리오
   frontend-portfolio:
     image: ghcr.io/dev-montyoh/frontend-portfolio:latest
     extra_hosts:
@@ -21,4 +22,67 @@ services:
       PORT: 80
       REDIS_URL: redis://redis:6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+    deploy: *deploy-defaults
+
+  #   backend
+  ##  gateway
+  backend-api-server-gateway:
+    image: ghcr.io/dev-montyoh/backend-api-server-gateway:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 80
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      MCP_JWT_SECRET_KEY: ${MCP_JWT_SECRET_KEY}
+    deploy: *deploy-defaults
+
+  ##  auth
+  backend-api-server-auth:
+    image: ghcr.io/dev-montyoh/backend-api-server-auth:latest
+    extra_hosts:
+      - "postgres:host-gateway"
+      - "redis:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 80
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      MCP_JWT_SECRET_KEY: ${MCP_JWT_SECRET_KEY}
+    deploy: *deploy-defaults
+
+  ##  user
+  backend-api-server-user:
+    image: ghcr.io/dev-montyoh/backend-api-server-user:latest
+    extra_hosts:
+      - "postgres:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 80
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      ADMIN_LOGIN_ID: ${ADMIN_LOGIN_ID}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    deploy: *deploy-defaults
+
+  ##  payment
+  backend-api-server-payment:
+    image: ghcr.io/dev-montyoh/backend-api-server-payment:latest
+    extra_hosts:
+      - "postgres:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 80
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      PAYMENT_INICIS_SIGN_KEY: ${PAYMENT_INICIS_SIGN_KEY}
+      PAYMENT_INICIS_MID: ${PAYMENT_INICIS_MID}
+      PAYMENT_INICIS_INIAPIKEY: ${PAYMENT_INICIS_INIAPIKEY}
+      PAYMENT_NICEPAY_MERCHANT_KEY: ${PAYMENT_NICEPAY_MERCHANT_KEY}
+      PAYMENT_NICEPAY_MID: ${PAYMENT_NICEPAY_MID}
     deploy: *deploy-defaults
