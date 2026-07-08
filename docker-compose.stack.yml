@@ -31,6 +31,18 @@ services:
       PORT: 80
     deploy: *deploy-defaults
 
+  ##  엑셀 데모
+  xcelerate-demo:
+    image: ghcr.io/dev-montyoh/xcelerate-demo:latest
+    extra_hosts:
+      - "postgres:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      XCELERATE_DB_URL: ${XCELERATE_DB_URL}
+      XCELERATE_DB_USERNAME: ${XCELERATE_DB_USERNAME}
+      XCELERATE_DB_PASSWORD: ${XCELERATE_DB_PASSWORD}
+    deploy: *deploy-defaults
+
   #   backend
   ##  gateway
   backend-api-server-gateway:
