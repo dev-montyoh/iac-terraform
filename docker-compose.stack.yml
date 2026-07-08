@@ -24,6 +24,13 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     deploy: *deploy-defaults
 
+  ##  결제
+  frontend-payment:
+    image: ghcr.io/dev-montyoh/frontend-payment:latest
+    environment:
+      PORT: 80
+    deploy: *deploy-defaults
+
   #   backend
   ##  gateway
   backend-api-server-gateway:
