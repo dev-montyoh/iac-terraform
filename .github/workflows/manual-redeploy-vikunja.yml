@@ -87,11 +87,8 @@ jobs:
               | "export \(.key)=\"\(.value)\";"
             ' | tr -d '\n')
 
-            docker stop vikunja || true
-            docker rm vikunja || true
-
             cd /home/ubuntu/app
-            curl -L -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository_owner }}/iac-terraform/refs/heads/master/docker-compose.yml
+            curl -L -o docker-compose.stack.yml https://raw.githubusercontent.com/${{ github.repository_owner }}/iac-terraform/refs/heads/master/docker-compose.stack.yml
 
             # Vikunja 전용 유저 생성 (없을 경우에만)
             docker exec postgres psql -U "$DB_USERNAME" -d postgres -c \
@@ -111,7 +108,8 @@ jobs:
             docker exec postgres psql -U "$DB_USERNAME" -d postgres -c \
               "GRANT ALL PRIVILEGES ON DATABASE \"$VIKUNJA_DB_NAME\" TO \"$VIKUNJA_DB_USERNAME\";"
 
-            docker-compose up -d vikunja
+            echo "$DOCKER_REGISTRY_ACCESS_TOKEN" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
+            docker stack deploy --with-registry-auth -c docker-compose.stack.yml application-services
 
       - name: Register backup cron
         uses: appleboy/ssh-action@v1

@@ -12,6 +12,13 @@ x-deploy-defaults: &deploy-defaults
     max_attempts: 3
 
 services:
+  #   proxy
+  backend-proxy-server:
+    image: ghcr.io/dev-montyoh/backend-proxy-server:latest
+    ports:
+      - "80:80"
+    deploy: *deploy-defaults
+
   #   frontend
   ##  포트폴리오
   frontend-portfolio:
@@ -104,4 +111,38 @@ services:
       PAYMENT_INICIS_INIAPIKEY: ${PAYMENT_INICIS_INIAPIKEY}
       PAYMENT_NICEPAY_MERCHANT_KEY: ${PAYMENT_NICEPAY_MERCHANT_KEY}
       PAYMENT_NICEPAY_MID: ${PAYMENT_NICEPAY_MID}
+    deploy: *deploy-defaults
+
+  #   vikunja
+  ##  vikunja
+  vikunja:
+    image: vikunja/vikunja:latest
+    extra_hosts:
+      - "postgres:host-gateway"
+    environment:
+      VIKUNJA_DATABASE_TYPE: postgres
+      VIKUNJA_DATABASE_HOST: postgres
+      VIKUNJA_DATABASE_DATABASE: ${VIKUNJA_DB_NAME}
+      VIKUNJA_DATABASE_USER: ${VIKUNJA_DB_USERNAME}
+      VIKUNJA_DATABASE_PASSWORD: ${VIKUNJA_DB_PASSWORD}
+      VIKUNJA_SERVICE_SECRET: ${VIKUNJA_JWT_SECRET}
+      VIKUNJA_SERVICE_PUBLICURL: https://vikunja.montyoh.dev/
+      VIKUNJA_SERVICE_ENABLEREGISTRATION: "false"
+      VIKUNJA_SERVICE_CUSTOMLOGOURL: ${VIKUNJA_CUSTOM_LOGO_URL}
+      VIKUNJA_FILES_TYPE: s3
+      VIKUNJA_FILES_S3_ENDPOINT: ${CLOUDFLARE_R2_END_POINT}
+      VIKUNJA_FILES_S3_BUCKET: ${VIKUNJA_R2_BUCKET}
+      VIKUNJA_FILES_S3_REGION: auto
+      VIKUNJA_FILES_S3_ACCESSKEY: ${VIKUNJA_R2_ACCESS_KEY}
+      VIKUNJA_FILES_S3_SECRETKEY: ${VIKUNJA_R2_SECRET_KEY}
+      VIKUNJA_FILES_S3_USEPATHSTYLE: "true"
+    deploy: *deploy-defaults
+
+  ##  mcp
+  vikunja-mcp:
+    image: ghcr.io/dev-montyoh/vikunja-mcp:latest
+    environment:
+      VIKUNJA_URL: http://vikunja:3456/api/v1
+      VIKUNJA_TOKEN: ${VIKUNJA_API_TOKEN}
+      BASE_URL: https://www.montyoh.dev/api/mcp/vikunja
     deploy: *deploy-defaults
