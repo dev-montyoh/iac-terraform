@@ -24,15 +24,6 @@ module "r2_vikunja" {
   zone_id               = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
 }
 
-# R2 버킷 - AFFiNE 파일 첨부 (affine.static.montyoh.dev)
-module "r2_affine" {
-  source                = "./r2"
-  CLOUDFLARE_ACCOUNT_ID = var.CLOUDFLARE_ACCOUNT_ID
-  bucket_name           = "affine-static"
-  domain                = "affine.static.montyoh.dev"
-  zone_id               = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-}
-
 # montyoh.dev 도메인 설정
 ##  루트 도메인 - 웹 접속
 resource "cloudflare_dns_record" "montyoh_dev_root" {
@@ -151,17 +142,6 @@ resource "cloudflare_dns_record" "montyoh_dev_vikunja" {
   ttl     = 1
   type    = "A"
   comment = "vikunja.montyoh.dev record"
-  content = var.oci_instance_public_ip
-  proxied = true
-}
-
-##  서브 도메인 - AFFiNE (워크스페이스)
-resource "cloudflare_dns_record" "montyoh_dev_affine" {
-  zone_id = var.CLOUDFLARE_ZONE_ID_MONTYOH_DEV
-  name    = "affine.montyoh.dev"
-  ttl     = 1
-  type    = "A"
-  comment = "affine.montyoh.dev record"
   content = var.oci_instance_public_ip
   proxied = true
 }
