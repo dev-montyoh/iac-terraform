@@ -47,6 +47,7 @@
 | `manual-redeploy-postgres.yml` | PostgreSQL 컨테이너 재시작 |
 | `manual-redeploy-redis.yml` | Redis 컨테이너 재시작 |
 | `manual-redeploy-vikunja.yml` | Vikunja 컨테이너 재시작 |
+| `manual-redeploy-vikunja-mcp.yml` | Vikunja MCP 컨테이너 재시작 |
 
 ---
 
